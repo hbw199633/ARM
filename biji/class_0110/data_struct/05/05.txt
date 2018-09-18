@@ -1,0 +1,69 @@
+/* ************************************************************************
+	> File Name: 05.txt
+	> Function: 
+	> Author: hlq
+	> Mail: hlqlinux@gmail.com 
+	> Created Time: 2017年02月17日 星期五 09时39分36秒
+	> Version: v1.0
+ ************************************************************************/
+ 栈：
+ 特征：
+ 	先进后出 FILO
+
+顺序栈
+	操作：入栈，出栈，获取栈顶元素，
+		释放栈。
+
+不能进行删除，修改，增加。
+
+栈顶：进行入栈，出栈的固定端。
+栈底：不能进行任何操作的栈的另一端。
+
+满栈：栈空间满，不能入栈
+空栈：栈中没有数据
+
+栈的创建：
+
+typedef int datatype;
+#define N 100
+
+typedef struct {
+	datatype 	data[N];
+	int 		top;		0 < top < N-1
+}seqstack;
+
+1. 创建空栈
+2. 入栈
+3. 出栈
+4. 获取栈顶元素
+5. 释放栈空间
+
+
+链式栈:
+	单链表
+	空栈
+
+单链表的结构体：
+
+typedef int datatype;
+
+typedef strcut node {
+	datatype 		data;
+	struct node * 	next;
+}linknode;
+
+
+空栈结构体：
+
+typedef struct {
+	linknode *	head;
+	int			n;
+}linkstack;
+
+
+存储模式
+
+存储类型
+
+
+

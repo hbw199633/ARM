@@ -1,0 +1,88 @@
+UDP 协议编程：
+
+udp： 用户数据报协议
+	特征： 无链接
+		   不可靠
+		   大数据
+
+	框架： c/s 
+
+流程：
+服务器：
+socket()===>bind()===>recvfrom()/sendto() ===>close()
+
+客户端：
+socket()===>bind(可选)===》sendto()/recvfrom()==>close()
+
+
+1、socket() 函数：
+	tcp: socket(AF_INET,SOCK_STREAM,0);
+	udp: socket(AF_INET,SOCK_DGRAM,0);
+
+2、bind() 函数：
+	完全雷同与tcp使用方式；
+
+
+3、发送：sendto
+ssize_t sendto(int sockfd, const void *buf, size_t len, 
+			int flags, const struct sockaddr *dest_addr,
+			socklen_t addrlen);
+
+功能：该函数可以从当前套接字中向目标主机发送数据；
+参数：sockfd 套接字值，一般是socket()的返回值
+      buf  要发送的数据地址
+	  len  要发送的数据长度
+	  flags 发送方式，0 表示阻塞发送
+	  dest_addr  要发送的目标地址结构体，不能为空；
+	  addrlen  目标主机地址的长度。
+返回值：成功 发送的数据长度
+		失败 -1；
+
+  接收：recvfrom
+ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
+	            struct sockaddr *src_addr, socklen_t *addrlen);
+
+功能：该函数将会在套接字上阻塞等待获取数据；
+参数：sockfd 套接字id
+	  buff   本地存储数据的地址
+	  len    存储数据的长度
+	  flags  获取数据的方式，0 阻塞
+	  src_addr  数据中源主机的地址信息结构体，如果不关心发送端
+	  			用NULL表示；
+	 addrlen  地址长度的指针
+返回值：成功 获取数据的长度
+		失败  -1；
+
+
+练习：
+	同桌之间分工编写客户端和服务器，完成客户端向服务器
+	发送字符串操作，当输入"quit"的时候双方退出。
+
+
+
+
+
+思考题：
+1、如何从服务器端获取客户端信息？
+
+2、如何从客户端指定端口发送信息？
+
+3、如果一个程序中既有recvfrom又有sendto 同时还有bind
+   那么bind为发送还是接收服务？
+
+
+
+练习题：
+	使用udp协议完成两个独立主机之间的多个文件传送；
+
+	思考：
+	1、什么是无链接？在该题目中如何体现？
+	2、什么是不可靠？在该题目中如何体现？
+
+===============================================================
+UDP 实践：
+	基于udp协议的一个在线聊天室；详见 案例
+
+
+
+

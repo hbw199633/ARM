@@ -1,0 +1,158 @@
+文件管理命令
+	1、ls==>ls -a==>ll==》ll -a
+	2、cd 切换目录
+	   cd 回车   切换到当前用户的家目录
+	   cd ..	 切换到上一层目录
+	   cd ../..  切换到上一层的上一层目录
+	   cd 相对路径/绝对路径
+	   cd - 切换到上一次所在目录
+	3、mkdir 创建目录
+	mkdir abc在当前路径下创建名为abc的文件夹
+	mkdir -p abc/123/456
+	mkdir 相对路径（绝对路径）/xxx文件
+	4、pwd显示当前文件的绝对路径
+	5、rmdir 删除空目录
+	rmdir xxx
+	rmdir 相对路径（绝对路径）/xxx文件
+	6、touch 创建普通文件
+	touch 111.txt在当前路径下创建名为111.txt		  的普通文件
+	touch 相对路径（绝对路径）/xxx文件
+	7、rm 删除文件
+	rm 111.txt 提示删除名为111.txt的文件
+	rm -f 111.txt不提示删除
+	rm -r 提示删除目录
+	rm -rf 不提示删除目录
+    8、cat xxx向终端打印xxx文件内容(前置)
+	   tac xxx向终端打印xxx文件内容(倒置)
+	   more xxx 从文件开头向终端打印xxx内容
+			回车 换行
+			空格 翻页
+	   less xxx 
+		回车 换行  pgup 向上翻页 上键 向上翻
+		空格 翻页  pgdn 向下翻页 下键 向下翻
+ 		more less 都是q退出
+	   head -n xxx 查看文件的前几行 默认10行
+	   tail -n xxx 查看文件的后几行 默认10行
+	9、cp src dest将src文件拷贝到dest
+	   cp -r sec dest	拷贝目录
+		注意：拷贝时，源文件必须存在否则提示,找不到				 该文件,目标文件可以不存在，创建该文件				，如果存在，询问是否覆盖目标文件
+	10、mv 移动命令
+		mv src dest 
+		mv 做改名用
+==================================================
+系统维护命令
+	uname -a
+	history 终端的历史记录
+	history -c 清除终端的历史记录
+	whereis 查询当前系统中的程序所在的路径
+	eg： whereis ls
+	which 查询当前环境变量和系统路径中的程序
+	eg：which ls
+	env 类出当前环境的系统变量
+	df  显示当前目录所占磁盘空间大小
+		 df -h 易懂的方式显示
+	du 显u示文件大小的命令
+	du -h 易懂的方式显示
+	du -h 路径 制定路径下的文件
+	du -ah 易懂的方式显示,包括隐藏文件
+	clear == ctrl+l 清空
+	help帮助
+
+文件属性管理命令
+	普通文件的权限 rw-r--r-- ==>644
+	目录文件的权限 rexr-xr-x ==>755
+		其中 r读权限   对应8进制数字4
+			 w写权限   对应8进制数字2
+			 x执行权限 对应8进制数字1
+		三组分别为：当前用户 组用户 其他用户
+	1、修改权限命令 ==》chmod 权限 文件名
+	   eg：chmod 777 abc 将文件abc的权限改为			777	
+		   chmod -r abc  将bac文件的所有用户			的读权限取消
+		   chmod u+r abc 将abc文件的u用户的				读权限添加
+	2、修改属主命令 chown 属主 文件
+		chown kingyi abc 
+		将abc的文件拥有者改为kingyui
+		chown :kingyi abc 
+		将abc文件的拥有组改为kingyi
+		chown kingyi:kingyi abc	 
+		将abc的拥有者和组都改为kingyi	
+	注意：修改属主的时候，目标用户必须存在
+	3、文件属性查看
+	ll xxx 简单列出文件信息
+	stat xxx 详细类出文件属性信息
+
+链接文件
+	1、软链接文件 ==》类似与windows的快捷方式‘
+	ln -s src dest
+	-s 表示一个软链接文件
+	src 表示源文件
+	dest表示链接文件
+	注意：软链接要求源文件必须存在，否则会链接不上
+	2、硬链接文件
+	ln  src dest
+	将src文见制作一个应链接到dest
+	如果源文件存在，则修改dest同步到源文件
+	如果源文件不存在，则修改dest会保留原始文件
+==================================================
+用户管理命令
+	1、创建用户 ==> adduser /useradd
+		adduser xxx
+		useradd xxx
+		查看 cat /etc/passwd 或 /home/
+    2、修改密码 ==> passwd
+		passwd 修改当前用户的密码
+		passwd 用户名 修改某一用户的密码
+    3、切换用户 su 用户名
+		su root
+		su 123
+		su切换用户时，从root到其他用户不须要密码
+		从其他用户到其他用户或到root用户需要密码
+	4、删除用户 userdel 用户名
+	5、切换终端 
+		字符终端 ctrl+F2 ...F6
+		ctrl+F1 可视化界面
+		who 命令 ==>查看但钱主机上的登录用户
+		tty? 真实的春字符登录界面
+		pts/? 虚拟终端
+		退出某个终端 exit
+		退出某个用户 exit
+用户组的操作
+	1、创建组 groupadd 
+		groupadd abc 创建一个名为abc的一个组
+		usermod -G abc kingyi
+		将kingyi用户放在abc组中 
+		groupdel abc 删除名为abc的组
+===========================================
+归档和压缩命令
+	打包压缩
+	tar -zcvf xxx.tar.gz xxx
+	==> tar -cvf xxx.tar xxx
+	    gzip -c xxx.tar > xxx.gz
+	解包压缩
+	tar -zxvf xxx.tar.gz
+	==>tar -xvf xxx.tar
+	   ungzip xxx.gz ==>gz消失
+
+	打包压缩
+	tar -jcvf xxx.tar.bz2 xxx
+	解包解压缩
+	tar -jxvf xxx.tar.bz2
+
+	tar -zcvf xxx.tar.gz -C /roo/ xxx
+	将/roo/ xxx打包压缩到当前文件中
+
+	打包压缩
+	zip -r xxx.zip xxx
+	以递归形式将xxx目录中打包压缩为zip格式的压缩包
+	解包压缩
+	unzip xxx.zip 将zip格式的压缩文件揭开
+
+练习： 
+新建目录并在目录中创建多个普通文件，分别用不同的方式打包压缩，拷贝到其他目录并解压缩，之后用diff命令比较文件是否相同。
+
+
+作业： 将今天所有的命令联系3遍
+		第一步：history -c 清空历史记录
+		第二步：练习
+		第三步：touch command.txt
+		第四步：history > command.txt

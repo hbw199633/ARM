@@ -1,0 +1,48 @@
+1、输入一行文字，找出其中大写字母，小写字母，空格，数字以其他的字符各有多少
+
+2、输入一个字符串，用指针求出字符串的长度。
+
+3、　main()
+　　{
+　　　int a[5]={1,2,3,4,5};
+　　　int *ptr=(int *)(&a+1);
+　　　printf("%d,%d",*(a+1),*(ptr-1));
+　　}
+
+ 输出结果是什么？
+
+4、请问以下代码有什么问题：
+
+　　int? main()
+　　{
+　　　char a;
+　　　char *str=&a;
+　　　strcpy(str,"hello");
+　　　printf(str);
+　　　return 0;
+　　}
+5、 char* s="AAA";
+　　printf("%s",s);
+　　s[0]='B';
+　　printf("%s",s);
+
+　　有什么错？
+
+6、编写一个程序实现功能：将两个字符串合并为一个字符串并且输出，用指针实现。
+   char str1[20]={“Hello ”}, str2[20]={“World ”};
+   
+7、编写一个程序实现功能：将字符串”Computer Secience”赋给一个字符数组，
+然后从第一个字母开始间隔的输出该串，用指针完成。
+
+
+8、使用C语言实现字符串中子字符串的替换
+
+描述：编写一个字符串替换函数，如函数名为 StrReplace(char* strSrc, char* strFind, char* strReplace)，
+      strSrc为原字符串，strFind是待替换的字符串，strReplace为替换字符串。
+
+举个直观的例子吧，
+如：“ABCDEFGHIJKLMNOPQRSTUVWXYZ”这个字符串
+，把其中的“RST”替换为“ggg”这个字符串，结果就变成了：
+ABCDEFGHIJKLMNOPQgggUVWXYZ
+
+

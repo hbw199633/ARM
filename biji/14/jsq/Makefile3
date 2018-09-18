@@ -1,0 +1,27 @@
+OBJS  = main.o 
+OBJS += add.o sub.o 
+OBJS += mul.o div.o
+CC = gcc
+FLAGS = -Wall -g -c
+jsq:$(OBJS)
+	$(CC) $^ -o $@
+
+main.o:main.c
+	$(CC) $(FLAGS) $< -o main.o
+
+add.o:add.c
+	$(CC) $(FLAGS) $< -o add.o
+
+sub.o:sub.c
+	$(CC) $(FLAGS) $< -o sub.o
+
+mul.o:mul.c
+	$(CC) $(FLAGS) $< -o mul.o
+
+div.o:div.c
+	$(CC) $(FLAGS) $< -o div.o
+
+.PHONY: clean
+
+clean:
+	rm -rf jsq *.o

@@ -1,0 +1,44 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+-tool	Makefile	/^	valgrind --tool=memcheck .\/$(TARGET)$/;"	m
+FLAGS	Makefile	/^FLAGS			:= -Wall -g$/;"	m
+INT	bitree.h	9;"	d
+INT	linkqueue.h	11;"	d
+MAX	linkqueue.h	8;"	d
+OBJS	Makefile	/^OBJS			:= main.c bitree.c linkqueue.c$/;"	m
+TARGET	Makefile	/^TARGET			:= tree$/;"	m
+__BITREE_H__	bitree.h	2;"	d
+__LINKQUEUE_H__	linkqueue.h	2;"	d
+_node_	linkqueue.h	/^typedef struct _node_ {$/;"	s
+bitree	bitree.h	/^}bitree;$/;"	t	typeref:struct:node
+count	linkqueue.h	/^	int				count;$/;"	m	struct:__anon1
+create_bitree	bitree.c	/^bitree * create_bitree(int size, datatype value)$/;"	f
+create_linknode	linkqueue.c	/^linknode * create_linknode(datatype value)$/;"	f
+create_linkqueue	linkqueue.c	/^linkqueue * create_linkqueue(void)$/;"	f
+create_node	bitree.c	/^bitree * create_node(datatype value)$/;"	f
+data	bitree.h	/^	datatype		data;$/;"	m	struct:node
+data	linkqueue.h	/^	datatype		data;$/;"	m	struct:_node_
+datatype	bitree.h	/^typedef unsigned int datatype;$/;"	t
+datatype	linkqueue.h	/^typedef unsigned int datatype;$/;"	t
+entry_linkqueue	linkqueue.c	/^int entry_linkqueue(linkqueue * q, datatype value)$/;"	f
+exit_linkqueue	linkqueue.c	/^int exit_linkqueue(linkqueue * q, datatype * data)$/;"	f
+free_linkqueue	linkqueue.c	/^int free_linkqueue(linkqueue * q)$/;"	f
+head	linkqueue.h	/^	linknode	*	head;$/;"	m	struct:__anon1
+isempty_linkqueue	linkqueue.c	/^int isempty_linkqueue(linkqueue * q)$/;"	f
+isfull_linkqueue	linkqueue.c	/^int isfull_linkqueue(linkqueue * q)$/;"	f
+lchild	bitree.h	/^	struct node *	lchild;$/;"	m	struct:node	typeref:struct:node::node
+linknode	linkqueue.h	/^}linknode;$/;"	t	typeref:struct:_node_
+linkqueue	linkqueue.h	/^}linkqueue;$/;"	t	typeref:struct:__anon1
+main	main.c	/^int main(int argc, const char *argv[])$/;"	f
+mid_order	bitree.c	/^int mid_order(bitree * root)$/;"	f
+next	linkqueue.h	/^	struct 	_node_ *  next;$/;"	m	struct:_node_	typeref:struct:_node_::_node_
+no_order	bitree.c	/^int no_order(bitree * root)$/;"	f
+node	bitree.h	/^typedef struct node {$/;"	s
+pro_order	bitree.c	/^int pro_order(bitree * root)$/;"	f
+rchild	bitree.h	/^	struct node * 	rchild;$/;"	m	struct:node	typeref:struct:node::node
+show_linkqueue	linkqueue.c	/^int show_linkqueue(linkqueue * q)$/;"	f
+tail	linkqueue.h	/^	linknode	*	tail;$/;"	m	struct:__anon1

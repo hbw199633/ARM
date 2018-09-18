@@ -1,0 +1,31 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+-tool	Makefile	/^	valgrind --tool=memcheck .\/$(TARGET)$/;"	m
+CFLAGS	Makefile	/^CFLAGS			:= -Wall -g$/;"	m
+N	sequeue.h	8;"	d
+OBJS	Makefile	/^OBJS			:= main.c sequeue.c$/;"	m
+STU	sequeue.h	/^}STU;$/;"	t	typeref:struct:__anon1
+STU	test.c	/^}STU;$/;"	t	typeref:struct:__anon3	file:
+TARGET	Makefile	/^TARGET			:= queue$/;"	m
+__SEQUEUE_H__	sequeue.h	2;"	d
+buf	sequeue.h	/^	char buf[32];$/;"	m	struct:__anon1
+buf	test.c	/^	char buf[32];$/;"	m	struct:__anon3	file:
+create_sequeue	sequeue.c	/^sequeue * create_sequeue(void)$/;"	f
+data	sequeue.h	/^	datatype	data[N];$/;"	m	struct:__anon2
+datatype	sequeue.h	/^typedef STU datatype;$/;"	t
+entry_sequeue	sequeue.c	/^int entry_sequeue(sequeue * q, datatype value)$/;"	f
+exit_sequeue	sequeue.c	/^datatype exit_sequeue(sequeue * q)$/;"	f
+exit_sequeue1	sequeue.c	/^int exit_sequeue1(sequeue * q, datatype * data)$/;"	f
+free_sequeue	sequeue.c	/^int free_sequeue(sequeue * q)$/;"	f
+head	sequeue.h	/^	int head;$/;"	m	struct:__anon2
+isempty_sequeue	sequeue.c	/^int isempty_sequeue(sequeue * q)$/;"	f
+isfull_sequeue	sequeue.c	/^int isfull_sequeue(sequeue * q)$/;"	f
+main	main.c	/^int main(int argc, const char *argv[])$/;"	f
+main	test.c	/^int main(int argc, const char *argv[])$/;"	f
+sequeue	sequeue.h	/^}sequeue;$/;"	t	typeref:struct:__anon2
+show_sequeue	sequeue.c	/^int show_sequeue(sequeue * q)$/;"	f
+tail	sequeue.h	/^	int tail;$/;"	m	struct:__anon2

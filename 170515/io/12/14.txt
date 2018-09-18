@@ -1,0 +1,217 @@
+进程间通信之 IPC 对象：
+
+IPC： 进程间通信
+IPC对象: ===>内核维护的一组共享数据对象。
+		 ===>消息队列对象  共享内存对象  信号量集对象
+			   管道          公共
+
+IPC 通用操作框架：
+ key ==>申请对象 ==》打开对象==》读写对象==》关闭对象==》卸载对象
+
+
+唯一键值key的创建：
+
+1、私有键值：IPC_PRIVATE  == 0X00000000  ==>只能给亲缘关系进程用
+
+2、动态键值：ftok()	
+#include <sys/types.h>
+#include <sys/ipc.h>
+	
+key_t ftok(const char *pathname, int proj_id);
+功能：该函数可以动态根据参数生成一个唯一键值。
+参数：pathname  一个不要被删除重建的文件即可。
+	  proj_id   一个单字节的幻数，用于生成键值。
+返回值：成功  key_t 类型的一个key
+		失败 -1；
+
+
+3、自定义键值：
+	自己定义的键值： key_t key = 0x88888888
+					 0x12345678
+					 0x12378956
+					 0x1
+
+消息队列操作流程：
+ 申请/打开消息队列 ===》读写消息队列 ===》卸载消息队列
+  msgget()              msgsnd()/msgrcv()    msgctl()
+
+
+1、申请对象：
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+
+int msgget(key_t key, int msgflg);
+功能：该函数可以根据key唯一键值在内核中提出消息队列对象
+	  使用申请。
+参数：key  之前已经确认的唯一键值
+	  msgflg 消息队列对象的申请方式，包括权限。
+			 如果第一次申请对象需要： IPC_CREAT
+			 如果要检测对象是否存在： IPC_EXCL
+返回值：成功  申请并打开的消息队列id
+		失败  -1；
+
+有如下命令可以手工查看系统中的IPC对象：
+
+ipcs -a  ===>查看所有IPC对象信息
+ipcs -q  ===>只查看消息队列对象信息
+ipcs -m  ===>只查看共享内存对象信息
+ipcs -s  ===>只查看信号量集对象信息
+
+
+读写消息队列：
+1、写
+int msgsnd(int msqid, const void *msgp, size_t msgsz, int msgflg);
+功能：该函数可以向指定的消息队列对象中存储类型为msgp形式的数据。
+参数：msqid 消息队列id
+	  msgp  消息队列中存储数据的结构体：
+	  struct msgbuf 
+	  {
+		  long mtype;       /* message type, must be > 0 */
+		  char mtext[128];    /* message data */
+	  };
+	  msgsz 消息队列中存储数据的大小，一般是参数2的mtext大小
+	  msgflg 消息的发送形式，0 表示阻塞发送。
+返回值：成功0
+		失败-1；
+
+
+2、读
+ ssize_t msgrcv(int msqid, void *msgp, size_t msgsz, 
+				long msgtyp,int msgflg);
+功能：该函数可以从指定的消息队列对象中获取数据并存储到本地内存。
+参数：msqid 消息队列id
+	  msgp  用于存储数据的本地内存。
+	  msgsz 获取数据的长度，一般是参数2的mtext大小。
+	  msgtyp 获取数据的类型。
+	  msgflg  获取数据的方式，0 表示阻塞获取。
+返回值：成功 获取到的数据实际长度
+		失败 -1；
+
+练习：
+	根据以上知识点，编写两个独立进程，使用消息队列完成如下功能：
+	进程1 获取用户输入信息并写入消息队列
+	进程2 读取消息队列内容并打印输出
+	当输入"quit"的时候两个进程全部退出。
+
+思考题：
+	如何在消息队列中存储不同数据类型的数据，并
+	可以用另一个程序任意读取该数据。
+
+卸载消息队列：
+ int msgctl(int msqid, int cmd, struct msqid_ds *buf);
+ 功能： 该函数可以修改指定消息队列的属性，可以用于
+		删除消息队列。
+ 参数：msqid 消息队列id
+	   cmd   IPC_RMID 表示删除对象。
+	   buff  NULL ，表示属性不做调整。
+返回值：成功  删除对象返回0
+		失败 -1；
+
+手工删除指定消息队列：
+ipcrm -q  msgid
+eg：ipcrm -q  32768  ===>将msqid为32768的消息队列删除。
+
+
+消息队列问题：
+
+1、消息队列中如果有多个相同类型消息，它们之间的关系是怎么样的？
+   不同类型之间的数据是如何存储的？
+   FIFO 同类型数据
+   不考虑存储类型，所有数据都是 FIFO
+   不同类型之间并列
+
+
+2、消息队列最多能创建多少个消息队列对象？每个消息队列最大能
+   存储多大的数据？一共能存储多少数据？
+   ipcs -lq
+
+   ------ Messages: Limits --------
+   max queues system wide = 1719
+   max size of message (bytes) = 65536
+   default max size of queue (bytes) = 65536
+
+================================================================
+共享内存对象：
+
+操作流程：
+ key值 ==》申请对象==》挂载对象==》读写对象==》卸载对象 ==》删除对象
+
+
+1、key值 三种方法之一
+
+2、申请对象：shmget
+#include <sys/ipc.h>
+#include <sys/shm.h>
+
+int shmget(key_t key, size_t size, int shmflg);
+功能：从当前进程向内核提出共享内存对象使用申请。
+参数：key 唯一 键值
+	  size  要申请的共享内存大小，单位是字节
+	  shmflg 申请共享内存的方式和权限，
+			 如果是第一次申请用 IPC_CREAT
+			 如果要检测是否存在 IPC_EXCL
+返回值：成功 返回申请到共享内存id ==》shmid
+		失败 -1；
+
+3、挂载对象 == 映射对象
+ void *shmat(int shmid, const void *shmaddr, int shmflg);
+ 功能：该函数可以将已经申请到的共享内存映射到当前进程的
+	   地址空间方便操作。
+ 参数：shmid 要映射的目标共享内存id
+	   shmaddr 要映射到本地内存的地址，如果用NULL表示
+			   由系统自动匹配。
+	   shmflg  映射之后的本地内存操作权限
+ 返回值：成功  返回的是映射之后的共享内存操作地址
+		失败  NULL
+
+
+4、读写共享内存：
+	没有具体的函数，只有类似malloc私有内存的使用方法。
+
+
+练习：
+1、使用共享内存完成进程1 向进程2  发送数字，结构体 数据。
+
+思考：
+1、数据在共享内存中读取之后，是否还存留。 ===》数据一直存在
+2、反复读写共享内存，数据是否会自动向后移动。==》数据反复覆盖
+
+
+4、卸载（撤销）映射
+
+ int shmdt(const void *shmaddr);
+ 功能：该函数可以断开当前进程与共享内存的链接。
+ 参数：shmaddr 要断开的映射地址，一般是之前挂载成功的地址
+ 返回值：成功 0
+		 失败 -1；
+
+5、删除共享内存对象：  ipcrm  -m  shmid
+
+ int shmctl(int shmid, int cmd, struct shmid_ds *buf);
+ 功能：该函数可以用于修改目标共享内存的属性，也可以删除
+	   共享内存对象
+ 参数：shmid 要修改的目标共享内存id
+	   cmd   IPC_RMID 表示删除共享内存
+	   buf   NULL 表示属性不做调整。
+返回值：成功 0
+		失败  -1；
+
+练习：
+ 1、如何使用共享内存传递一个整形数组。
+
+
+
+ 作业：
+
+ 2、如何使用共享内存在父子进程间传送一个ASCII文件内容。
+
+
+
+
+
+
+
+
+
+

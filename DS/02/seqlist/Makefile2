@@ -1,0 +1,5 @@
+OBJS = main.c
+OBJS += seqlist.c
+
+seqlist:$(OBJS)
+	gcc $(OBJS) -o seqlist

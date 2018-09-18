@@ -1,0 +1,27 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+FLAGS	Makefile	/^FLAGS = -Wall -g -c$/;"	m
+OBJS	Makefile	/^OBJS = main.o linkstack.o$/;"	m
+_LINKSTACK_H_	linkstack.h	10;"	d
+_node_	linkstack.h	/^typedef struct _node_$/;"	s
+cc	Makefile	/^cc = gcc$/;"	m
+chg_linkstack	linkstack.c	/^int chg_linkstack(linkstack *ls,datatype va)$/;"	f
+count	linkstack.h	/^	int		 count; \/\/栈的容量$/;"	m	struct:__anon2
+create_linknode	linkstack.c	/^linknode *create_linknode(datatype va)$/;"	f
+create_linkstack	linkstack.c	/^linkstack *create_linkstack()$/;"	f
+data	linkstack.h	/^	datatype		data;		$/;"	m	struct:_node_
+datatype	linkstack.h	/^}datatype;$/;"	t	typeref:struct:__anon1
+empty_linkstack	linkstack.c	/^int empty_linkstack(linkstack *ls)$/;"	f
+find_linkstack	linkstack.c	/^int find_linkstack(linkstack *ls,datatype *va)$/;"	f
+head	linkstack.h	/^	linknode *head; \/\/永远指向栈顶的地址$/;"	m	struct:__anon2
+linknode	linkstack.h	/^}linknode;$/;"	t	typeref:struct:_node_
+linkstack	linkstack.h	/^}linkstack;$/;"	t	typeref:struct:__anon2
+main	main.c	/^int main(int argc,const char* argv[])$/;"	f
+next	linkstack.h	/^	struct _node_	*next; \/\/栈的指针域$/;"	m	struct:_node_	typeref:struct:_node_::_node_
+pop_linkstack	linkstack.c	/^int pop_linkstack(linkstack *ls,datatype va)$/;"	f
+push_linkstack	linkstack.c	/^int push_linkstack(linkstack *ls,datatype va)$/;"	f
+str	linkstack.h	/^	char str[32];$/;"	m	struct:__anon1

@@ -1,0 +1,137 @@
+字符串读写IO： fgets/fputs
+
+
+I 操作
+
+char *fgets(char *s, int size, FILE *stream);
+功能：该函数可以将stream流关联的文件中大小为size的数据
+      读取到本地内存s所在的地址上。
+参数：s 用于存储数据的本地内存，一般是数组或者堆区内存。
+      size 用于获取数据的长度，一般是s参数的大小 -1,；
+      stream 用于获取数据的流指针，如果该值为stdin则表示
+             从键盘获取，否则指定的文件获取。
+返回值：成功 返回存储数据的地址 == s的地址
+        失败/文件结尾  NULL；
+
+注意：该函数默认获取数据的时候是按行获取，
+      如果文件内容行小于参数size则只取一行
+      如果文件内容行大于参数size 则只取 size -1 个字符。
+
+
+练习：
+    根据以上内容，使用fgets函数将主函数传参指定文件的内容
+    输出到屏幕。
+    比如： ./a.out  xxx 
+
+gets 和 fgets的关系：
+
+gets(buff)  ===>从终端获取用户输入信息并存储到buff内存中。
+            ===》bug 内存溢出用户输入> buff 大小的时候
+
+fgets(buff,sizeof(buff),stdin);
+            ===>从终端获取用户输入信息并存储到buff内存中。
+            ===》没有内存溢出的问题
+
+fgets(buff,strlen(buff),fp/stdin);
+
+gets () == fgets(,,stdin);
+
+建议：以后所有获取字符串的地方，全部将 gets()和scanf()替换
+      成fgets();
+
+
+
+O 操作：
+ int fputs(const char *s, FILE *stream);
+ 功能：该函数可以将指定的s字符串，输出到指定的stream流对象上。
+ 参数： s 要输出的目标字符串。
+        stream 要输出的目标文件流指针，
+                如果stream == stdout 则该字符串会行缓存输出到屏幕
+                如果stream == stderr 则该字符串会不缓存输出到屏幕
+                如果stream == fp 则字符串会以4096满缓存输出到普通
+                文件fp中。
+ 返回值：成功 >= 0 的值。
+         失败  EOF  == -1；
+
+
+
+练习：
+1、    使用fputs函数完成如下功能，程序启动，提示用户任意输入信息
+    将用户输入的字符串分别输出到屏幕和保存文件。
+    ./a.out xxx
+    请输入信息
+    
+
+
+
+2、使用fgets和fputs函数完成任意文件的拷贝功能，类似与系统的cp命令
+    效果。比如程序名称为mycp则执行过程如下：
+    mycp xxx yyy   ===>把xxx文件内容拷贝到yyy文件中。
+    要保证xxx和yyy 完全一样。
+
+
+
+
+注意：fgets/fputs 只能操作字符串构成的文本文件，不能处理二进制文件
+      原因是每次获取数据的时候，按照字符串获取会截断数据，导致目标
+      数据比原始数据短。
+
+
+二进制文件读写：fread/fwrite
+
+I 操作：
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+功能：该函数可以完成任意文件的读操作，不论是文本文件还是二进制文件
+参数：ptr 用于存储数据的纯地址。
+      size 存储数据的单元大小。
+      nmemb 存储数据的长度，一般是ptr的大小。
+      stream 获取数据的文件流指针。
+返回值：成功 返回获取到的数据长度
+        失败/文件结尾 返回缩小的数据长度或者 0 ；
+
+
+
+
+思考题：
+1、fread能不能从键盘获取数据并打印到屏幕？
+    参数3决定了从键盘获取数据的长度，不够长度则等待。
+
+2、fread如何将一个文本文件完整的读完并打印到屏幕？
+    fread获取的文本文件如果是汉字则可能出现乱码。
+
+
+O 操作：
+size_t   fwrite(const  void  *ptr,  size_t  size,  
+                size_t  nmemb,  FILE*stream);
+功能：将存储与ptr地址上的数据中单位大小为size个数为nmemeb个
+      长度的数据写入stream流对象关联的文件中。
+参数：ptr 要写的数据地址，在写的过程中不会修改。
+      size 写入数据的单元大小。
+      nmemb 写入数据的个数，一般是ptr的长度
+      stream 要写入的目标文件。
+返回值：成功 写入文件的数据的个数，小于等于nmemb的值‘
+        失败  0
+
+二进制数据：
+
+1、结构体数据 ====>fread_struct.c fwrite_struct.c
+
+2、二进制文件 ====>fwrite_bin.c
+ 
+练习：
+1、 使用fread/fwrite函数完成如下功能：
+    提示用户任意输入，将用户输入的信息存储到 abc.txt 文件中
+    当用户输入"quit"的时候程序退出。
+
+2、 编写一个程序可以主函数传参带入一个二进制文件，在该程序中
+    将该二进制文件分解成固定个数的小二进制文件，比如：
+    ./a.out   b.out  3
+    ===>将会把b.out的二进制程序分解成独立的三份二进制文件。
+    b.out_1
+    b.out_2
+    b.out_3
+
+
+
+
+

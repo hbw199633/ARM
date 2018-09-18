@@ -1,0 +1,121 @@
+/* ************************************************************************
+	> File Name: 02.txt
+	> Function: 
+	> Author: hlq
+	> Mail: hlqlinux@gmail.com 
+	> Created Time: 2017年02月14日 星期二 10时07分32秒
+	> Version: v1.0
+ ************************************************************************/
+
+ 线性表的链式存储	===》 单向链表
+ 1. 概念：
+ 	线性表中所有元素分布在存储其的不同位置，每个元素
+	称为节点。
+	每个节点由固定的两部分组成 ：data	+ 	next
+								 数据域		指针域
+
+ 2. 特点	
+ 	插入和删除效率高于顺序表
+	修改功能差于顺序表
+
+	每个节点通过指针域和下一个节点进行关联
+
+ 3. 组成
+ 	头节点	----》 第一个节点 ....----> 最后一个节点
+ 4. 
+ 	单链表的结构体
+
+	typedef int datatype;
+
+	typedef struct node {
+		datatype data;			/* 数据域 */
+		struct node * next;		/* 指针域 */
+	}linknode;			/* 一个节点 */
+
+尾部增加函数
+
+int add_tail_linklist(linknode * L, datatype value)
+{
+	linknode * p = create_linknode(value);
+	linknode * tmp = L;
+	while (tmp->next != NULL)
+	{
+		tmp = tmp->next;
+	}
+	tmp->next = p;
+}
+
+int add_head_linklist(linknode * L, datatype value)
+{
+
+}
+
+int modify_value_linklist(linknode * L, datatype oldvalue, datatype newvalue)
+{
+	核心代码：
+	linknode * p = L->next;
+	while (p != NULL)
+	{
+		if ()
+		{
+		}
+		p = p->next;
+	}
+
+}
+ 	
+
+删除功能
+int delete_value_linklist(linknode * L, datatype value)
+{
+	核心代码：
+	linknode * p = L;
+	linknode * tmp = L->next;
+	while (tmp != NULL)
+	{
+		if (value == tmp->data)
+		{
+			p->next = tmp->next;
+			free(tmp);
+			tmp = p->next;
+		}
+		else 
+		{
+			p = p->next;
+			tmp = tmp->next;
+		}
+	}
+
+}
+
+查找功能：
+int find_value_linklist(linknode * L, datatype value)
+{
+}
+
+
+按位置进行插入：
+int insert_pos_linklist(linknode * L, int pos, datatype value)
+{
+	核心代码：
+	linknode * p = L, * tmp = L->next;
+	int count = 0;
+	pos -= 1;
+	if (pos > L->data)		return -1;
+	while (pos--)
+	{
+		tmp = tmp->next;
+		p = p->next;
+	}
+	linknode * p1 = create_linknode(value);
+	p->next = p1;
+	p1->next = tmp;
+}
+
+
+int reserve_linklist(linknode * L)
+{
+}
+
+
+		

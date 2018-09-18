@@ -1,0 +1,117 @@
+
+1、结构体应用 ====》基本数据类型 int float char
+			  ====》组合数据类型 struct xxx；
+
+   基本数据类型应用：
+   1、定义变量并使用变量值；
+   		int a ; a = 100;
+		printf("a = %d \n",a);
+   2、使用基本数据类型做函数参数，传参数；
+   		void test(int a,int b);
+
+   3、使用基本数据类型做函数返回值，接收返回值；
+		int  test(void);
+
+	====>依次类推，结构体也只有以上三种应用;
+
+	1、定义结构体变量并使用结构体变量；
+		typedef struct 
+		{
+			int a ;
+			float b;
+			char c;
+		}VAR;
+
+		VAR  va;
+		==>struct test va;
+
+		struct 
+		{
+			int a;
+			float b;
+			char c;
+		}va1,va2;  ///va1,va2 无名结构定义的变量
+		struct ???  va3;
+
+		struct test
+		{
+			int a ;
+			float b;
+			char c;
+		}; /////结构体定义
+
+		struct test var;  ///结构体变量定义
+
+		var.a = 100;   ////结构体成员变量赋值
+		var.b = 3.14;
+		var.c = 'x';
+
+		printf("var.a = %d b = %f c = %c \n",
+				var.a,var.b,var.c);
+	
+		struct test *pvar ;
+		pvar = &var;
+		pvar->a = 200;
+		pvar->b = 5.16;
+		pvar->c = 'y';
+
+		printf("a = %d b = %f c = %c \n",
+				pvar->a,pvar->b,pvar->c);
+   
+	2、结构体传参数：
+		void show(struct test va)
+		{
+			va.a
+			va.b
+			va.c
+		}
+		void show2(struct test *pva)
+		{
+			if(NULL == pva)  return ;
+			pva->a;
+			pva->b;
+			pva->c;
+		}
+
+
+	3、结构体返回值：
+		struct test  show3(int a,int b)
+		{
+
+			static struct test xxx;
+
+			return xxx;
+		}
+
+		struct test * show3(int a,int b)
+		{
+			struct test * p = malloc(sizeof(struct test));
+
+			return p;
+		}
+
+		free(p);
+
+
+2、二叉树的层序遍历
+
+    linkqueue *q = create_linkqueue();
+	enter_linkqueue(q,root);
+	while(!empty_linkqueue(q))
+	{
+		p  = exit_linkqueue(q);
+		printf("%d ",p->data);
+		if(p->lchild)
+			enter_linkqueue(q,p->lchild);
+		if(p->rchild)
+			enter_linkqueue(q,p->rchild);
+	}
+	free_linkqueue(q);
+
+
+
+
+
+
+
+

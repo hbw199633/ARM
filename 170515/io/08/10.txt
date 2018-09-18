@@ -1,0 +1,204 @@
+多线程编程：
+
+多进程并发存在的问题：
+1、系统资源消耗大 ===》4G
+2、多进程之间速度差异 
+3、多进程之间的资源共享不方便
+
+多线程：
+	轻量级进程
+	独立进程的多个任务
+	属于CPU调度单位
+
+多进程和多线程的区别：
+
+资源：多线程比多进程多了共享资源
+	  多进程只有私有资源。
+	  多线程也有私有资源。
+
+空间：多进程各自独立4g内存空间。
+	  多线程共享进程4g内存空间。
+
+===============================================================
+多线程编程框架：
+	创建多线程 ===》读写多线程 ===》关闭回收多线程
+	pthread_create    回调函数        pthread_exit
+									  pthread_join
+
+
+linux 系统的线程模型使用POSIX 线程模型：pthread
+
+1、编写代码的时候需要三方库 #include <pthread.h>
+
+2、编译代码的时候需要三方库 gcc xxx.c -l pthread
+
+创建线程：
+#include <pthread.h>
+
+int pthread_create(pthread_t *thread, 
+				   const pthread_attr_t *attr,
+		           void *(*start_routine) (void *),
+				   void *arg);
+
+功能：该函数可以动态的生成一个线程并执行线程调用。
+参数；thread 用于存储线程id的地址==》 tid
+	  attr   线程的默认属性，如果选择NULL表示默认属性不调整。
+	  
+	  void * xxx (void * arg);  指针函数
+	  void (*fun)(void * arg);  函数指针fun ===》void xxx(void *);
+	  指向指针函数的函数指针 start_routie ===>函数名称
+	  ===》回调函数的名字。
+	  ===》回调函数应该如下格式：void* xxx (void * arg);
+	  ===》回调函数就是线程的执行空间
+	  arg 回调函数的参数。
+返回值：成功  0
+		失败  -1；
+
+多线程创建并执行的判断依据：
+1、ps aux  ===>STAT  l
+2、pstree  ===>{xxx} 线程
+
+练习题：
+	编写多线程程序，至少创建3个线程，每个线程输出不同
+	的消息打印到屏幕。
+
+1、如何编写代码测试多线程的并发执行效果？
+2、如何编写代码测试多线程的资源共享，内存共享？
+   私有资源是否有效。
+   全局变量  共享资源
+   栈区变量  私有资源[共享资源]
+   堆区变量  共享资源
+   常量区    共享资源 
+   静态存储区  共享资源
+
+   ====》4g内存中的所有地址都是共享的。
+
+3、多线程如何识别自身。
+	多进程： getpid()  getppid()
+	多线程： pthread_self();
+	pthread_t pthread_self(void);
+
+====================================================
+线程的退出：有两种方式
+
+1、线程运行完毕自行退出：pthread_exit()   ==>自杀
+void pthread_exit(void *retval);
+功能：该函数可以使当前线程安全退出。
+参数：retval  线程退出时候的返回值以地址形式返回。
+	  如果线程没有返回数据则用NULL表示。
+返回值：无
+
+2、线程被其他线程强制退出：pthread_cancel() ==>他杀
+int pthread_cancel(pthread_t thread);
+功能：该函数可以用于结束指定线程的执行，一般由创建者
+	  线程结束子线程使用。
+参数：thread  要结束的目标线程tid
+返回值：成功 0
+		失败 -1；
+
+问题：
+1、如果主线程和子线程都在运行，进程结束会不会出现僵尸线程？
+   或者孤儿线程。
+   ====》僵尸 ==》子进程退出，父进程没有回收。==》Z
+              ==》子线程退出，主线程没有回收。==》Z 看不到。
+   ====》孤儿 ==》子进程运行，父进程退出。
+			  ==》子线程运行，主线程退出，子线程同时退出。==》进程
+
+2、平级之间的线程能不能互相结束对方，线程能不能用pthread_cancel
+   结束自己？ 都可以。
+
+
+线程的资源回收：pthread_join
+int pthread_join(pthread_t thread, void **retval);
+功能：该函数可以阻塞等待并回收指定线程的资源和返回值。
+参数：thread 要回收的目标线程tid
+	  retval 回收子线程正常退出的返回值。
+			 如果不关心子线程的退出返回值，用NULL表示。
+返回值：成功 0
+		失败 -1；
+
+问题：
+	如果有多个线程同时存在，每个线程退出时间不同
+	，如何不阻塞回收？
+
+pthread_tryjoin_np 
+pthread_timedjoin_np
+================================================================
+多线程编程的 传参 和 返回值：
+1、线程传参数:	
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
+                    void *(*start_routine) (void *), void *arg);
+
+调用： pthread_create(&tid,NULL,fun,NULL);
+调用： 
+	pthread_create(&tid,NULL,fun,"abc");
+	pthread_create(&tid,NULL,fun,"def");
+	pthread_create(&tid,NULL,fun,"axx");
+
+思考题目：
+1、如何向子线程中传递整形数字，浮点形数字并在子线程中打印输出。
+2、如何向子线程中传递结构体数据，并将结构体信息在子线程中打印输出。
+3、在向子线程传参的时候，那些数据在子线程内部可以修改，那些不能修改。
+    常量都不能修改，变量都能修改。
+
+
+2、线程的返回值：
+   子线程调用  pthread_exit(void *retval); 返回调用
+   主线程调用  pthread_join(tid,void **retval); 接收调用
+
+   pthread_exit(&a);   &a == 0xbf2323452;
+
+   void * retval = NULL;     ///合法
+   pthread_join(tid,&retval);
+
+   void ** retv2 = NULL;    ////不能用会段错误
+   pthread_join(tid,retval);
+
+练习：
+	如何从子线程中返回一个字符串？==>几种形式 常量  
+											  字符数组 不行
+											  静态数组 可以
+											  堆区字符串 可以
+	如何从子线程中返回一个结构体？
+
+	能不能直接返回数字而不定义静态变量？
+
+	pthread_exit( (void*)9 );
+    void * retval = NULL;   
+    pthread_join(tid,&retval);
+	printf("return = %d %p \n",(int)retval,retval);
+
+	将返回的数据存储到传入的参数中。
+	
+	
+作业：
+1、设计一个多线程程序，至少有两个子线程，一个线程用于读取
+   文件内容并写入公共内存区，另一个线程读取公共内存区并将
+   数据打印输出。
+
+2、
+	设计一个多线程程序，可以对于指定目录中的文件进行
+	代码行统计，并将最终统计结果分别和汇总输出。
+	比如：
+		./a.out  ./
+		 xxx.c  23行
+		 xxx.c  345行
+		 ....
+		 总共：234525行
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

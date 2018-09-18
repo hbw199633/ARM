@@ -1,0 +1,13 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+create_linklist	linklist.c	/^linknode * create_linklist(void)$/;"	f
+data	linklist.h	/^	datatype 	  data;$/;"	m	struct:node
+datatype	linklist.h	/^typedef int datatype;$/;"	t
+linknode	linklist.h	/^}linknode;$/;"	t	typeref:struct:node
+main	main.c	/^int main(int argc, const char *argv[])$/;"	f
+next	linklist.h	/^	struct node * next;$/;"	m	struct:node	typeref:struct:node::node
+node	linklist.h	/^typedef struct node {$/;"	s

@@ -1,0 +1,40 @@
+/* ************************************************************************
+	> File Name: 04.txt
+	> Function: 
+	> Author: hlq
+	> Mail: hlqlinux@gmail.com 
+	> Created Time: 2017年02月16日 星期四 09时30分24秒
+	> Version: v1.0
+ ************************************************************************/
+ 双向循环链表：
+ 	效率最高的一种链表
+概念：在单项循环链表的基础上增加一个反向的
+	地址构成双向循环链表。
+结构：
+
+typedef int datatype;
+
+typedef struct node {
+	datatype		data;
+	struct node *	right;
+	struct node *	left;
+}dlinknode;
+
+操作：	
+增加、删除、修改、查找、打印、释放。
+
+创建节点函数：
+
+dlinknode * create_dlinknode(datatype value)
+{
+	dlinknode * p = (dlinknode *)malloc(sizeof(dlinknode));
+	if (NULL == p)			return NULL;
+	p->data = value;
+	p->right = p->left = p;
+	return p;
+}
+
+
+
+
+

@@ -1,0 +1,20 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+FLAGS	Makefile	/^FLAGS = -Wall -g -c$/;"	m
+OBJS	Makefile	/^OBJS = main.o Linklist.o$/;"	m
+_LINKLIST_H_	Linklist.h	10;"	d
+_node_	Linklist.h	/^typedef struct _node_$/;"	s
+cc	Makefile	/^cc = gcc$/;"	m
+count	Linklist.h	/^	int count;$/;"	m	struct:__anon1
+create_linklist	Linklist.c	/^linklist * create_linklist()$/;"	f
+data	Linklist.h	/^	datatype		data;$/;"	m	struct:_node_
+datatype	Linklist.h	/^typedef int datatype;$/;"	t
+head	Linklist.h	/^	linknode *head;$/;"	m	struct:__anon1
+linklist	Linklist.h	/^}linklist;$/;"	t	typeref:struct:__anon1
+linknode	Linklist.h	/^}linknode;$/;"	t	typeref:struct:_node_
+main	main.c	/^int main(int argc,const char* argv[])$/;"	f
+next	Linklist.h	/^	struct _node_	*next;$/;"	m	struct:_node_	typeref:struct:_node_::_node_

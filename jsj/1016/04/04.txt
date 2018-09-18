@@ -1,0 +1,204 @@
+===================================================
+文件IO ===》操作系统对外封装的一组用户使用的系统调用
+            接口函数。 man 2 xxx
+
+文件io ===》描述符  文件系统 io函数
+
+文件系统： 非缓存文件系统，在所有IO操作的过程中没有
+           缓存区的存在。
+
+描述符： 相对与标准io的文件操作对象，
+         标准io ： FILE *   文件流指针
+         文件io :  int      文件描述符
+
+文件描述符特征: 最小 未用 非负 整数
+
+最小： 默认从3 开始，0 == STDIN_FILENO 
+                     1 == STDOUT_FILENO
+                     2 == STDERR_FILENO
+
+       注意区别： 标准io的 stdin  stdout stderr
+
+未用： 如果有文件描述符释放，则系统自动回收，并
+       在系统下次打开文件的时候再次使用。
+
+非负整数： >= 0 整数。
+
+文件io操作框架：
+  文件打开 ===》文件读写(文件定位) ===》文件关闭
+   open()      read()/write()/lseek         close()
+
+
+打开操作： 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+int open(const char *pathname, int flags);
+功能：该函数可以指定方式打开指定路径+名称的文件。
+参数： pathname 要打开的文件路径+名称
+       flags 打开文件方式：
+            O_RDONLY   只读  
+            O_WRONLY   只写
+            O_RDWR     读写
+       要求文件必须存在。
+返回值： 成功  返回文件描述符
+         失败  -1
+
+一个进程中最多能同时打开 1024 个文件 《===ulimit -a
+
+
+关闭操作：
+#include <unistd.h>  === POSIX 标准
+
+int close(int fd);
+功能：用来关闭指定的文件描述符
+参数：fd 要关闭的文件描述符，可以关多次。
+返回值：成功 0
+        失败 -1；
+
+
+文件IO操作： 
+#include <unistd.h>
+
+ssize_t read(int fd, void *buf, size_t count);
+功能：通过该函数可以从fd指定的文件中获取长度为
+      count字节的数据到buf所在的本地内存。
+参数：fd 要读数据的文件描述符。
+      buf 用来存储读到的数据。
+      count 控制读的数据长度，单位字节。
+返回值：成功 返回获取到的数据长度，一般小于等于count
+        失败     -1 
+        文件结尾  0
+
+思考题：
+1、能不能从终端使用read获取用户输入？
+
+2、如何将一个文件中内容全部read并输出到屏幕？
+
+
+ssize_t  write(int fd, const void *buf, size_t count);
+功能：向指定的fd文件中写入长度为count字节的数据。
+参数：fd 文件描述符
+      buf 要写入文件的信息。
+      count 要写入文件的数据长度，单位字节。
+返回值：成功 返回写入的数据长度
+        失败 -1
+
+
+思考题：
+1、如果使用write函数写数据到终端，则不存在缓存会直接输出。
+
+2、如何获取用户输入并写入文件，当用户输入"quit"程序退出
+
+
+文件定位操作：
+off_t lseek(int fd, off_t offset, int whence);
+功能：在fd所在的文件中移动其文件指针到指定位置。
+参数：fd 要移动文件指针的文件描述符
+      offset 移动的偏移量，> 0 向文件末尾偏移
+                           < 0 向文件开头偏移
+                           = 0 文件指针不动
+      whence 移动的起始位置，有如下三个宏。
+             SEEK_SET  文件开头位置
+             SEEK_CUR  文件当前位置
+             SEEK_END  文件末尾位置
+返回值：成功 返回移动后指针距离文件开头位置的字节数。
+        失败 -1
+
+练习：
+    自己编写代码验证，lseek是否具有fseek同样的问题。
+
+1、a/a+ 方式无效 ？
+2、向回偏移越过文件头会偏移失败？
+3、向后偏移越过文件末尾会有空洞文件？
+4、在设备文件上偏移无效？
+
+
+open的其他操作：
+int open(const char *pathname, int flags, mode_t mode)
+功能：完全类似于open两个参数的效果，都可以打开指定路径+名称
+      的文件并返回其文件描述符 ，但是参数3有独立特性。
+参数：pathname 文件路径+ 名称
+      flags  在原有O_RDONLY  O_WRONLY  O_RDWR的基础上可以继续
+             新增加如下flags：
+              O_CREAT  O_EXCL  O_TRUNC  O_APPEND
+                创建    检测    清空     追加
+             所有的flags都以位或运算的方式设置。
+       mode  文件的权限，主要用于flags如果有O_CREAT 的时候生效。
+             mode_t 是八进制的整数类型。
+返回值：成功 返回文件描述符
+        失败 -1
+
+注意：open的参数在有O_CREAT的时候，mode权限参数必须有，
+      同时该权限不能超过普通文件的默认权限。
+
+
+练习：
+    使用open三个参数的方式打开创建一个新文件，在该文件中
+    测试lseek的追加效果验证。
+
+
+creat   相当于  open的参 数   flags 等于O_CREAT|O_WRONLY|O_TRUNC.
+
+int creat(const char *pathname, mode_t mode);
+
+O_EXCL 选项用来检测文件是否存在的，如果有存在则创建失败并设置errno
+
+
+FILE *fdopen(int fd, const char *mode)
+功能：将一个已经以文件io方式打开的文件转换成
+      标准io方式。
+参数：fd 已经以文件io打开的文件描述符
+      mode 打开文件的方式，用标准io的方式"r/r+ w/w+ a/a+"
+
+返回值：成功  返回文件流指针
+        失败  NULL
+
+思考题：
+	一个已经以标准IO打开的文件，能不能转换成文件io方式操作？
+
+
+面试题：
+    尝试编写宏来使用文件io的读写方式模拟标准io的读写方式。
+    比如：
+    #define   FILE_W    O_WRONLY|O_CREAT|O_TRUNC
+              FILE_RW
+              FILE_A
+              FILE_RWA
+              FILE_R
+              FILE_RW
+    
+
+
+文件io与标准io的适用场合：
+1、如果操作的是设备，一般用文件io   
+   如果业务逻辑不允许有缓存，则用文件io 
+   系统内核与底层操作一般用文件io
+
+2、除过以上要求外都可以用标准io操作
+
+
+
+文件io练习题：
+
+1、使用文件io方式完成任意两个文件的拷贝功能。
+    比如: ./mycp  src  dest
+
+2、使用文件io方式，封装一个自己的myprintf函数
+    可以模拟实现系统printf函数的缓存效果。
+    比如： 
+        myprintf("abc");    屏幕不显示
+        myprintf("abc \n"); 屏幕显示字符
+
+
+
+
+
+
+
+
+
+
+
+

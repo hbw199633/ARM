@@ -1,0 +1,18 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+-tool	Makefile	/^	valgrind --tool=memcheck .\/$(TARGET)$/;"	m
+FLAGS	Makefile	/^FLAGS			:= -Wall -g$/;"	m
+N	seqstack.h	7;"	d
+OBJS	Makefile	/^OBJS			:= main.c seqstack.c$/;"	m
+TARGET	Makefile	/^TARGET			:= stack$/;"	m
+__SEQSTACK_H__	seqstack.h	2;"	d
+create_seqstack	seqstack.c	/^seqstack * create_seqstack(void)$/;"	f
+data	seqstack.h	/^	datatype	data[N];$/;"	m	struct:__anon1
+datatype	seqstack.h	/^typedef int datatype;$/;"	t
+main	main.c	/^int main(int argc, const char *argv[])$/;"	f
+seqstack	seqstack.h	/^}seqstack;$/;"	t	typeref:struct:__anon1
+top	seqstack.h	/^	int			top;$/;"	m	struct:__anon1

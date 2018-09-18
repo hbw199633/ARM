@@ -1,0 +1,26 @@
+.PHONY: clean  install
+
+OBJS=main.o add.o sub.o div.o
+
+FLAGS=-Wall -g -c
+CC=gcc
+
+jsq:$(OBJS)
+	$(CC) $^  -o $@
+main.o:main.c
+	$(CC) $(FLAGS) $< -o $@
+add.o:add.c
+	$(CC) $(FLAGS) $< -o $@
+sub.o:sub.c
+	$(CC) $(FLAGS) $< -o $@
+div.o:div.c
+	$(CC) $(FLAGS) $<  -o $@	
+
+
+clean:
+	rm -rf $(OBJS)
+	rm -rf jsq
+
+install:
+	cp ./jsq  /usr/local/sbin
+

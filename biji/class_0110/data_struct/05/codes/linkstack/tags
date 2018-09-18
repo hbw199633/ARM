@@ -1,0 +1,31 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+-tool	Makefile	/^	valgrind --tool=memcheck .\/$(TARGET)$/;"	m
+CFLAGS	Makefile	/^CFLAGS			:= -Wall -g$/;"	m
+MAX	linkstack.h	7;"	d
+OBJS	Makefile	/^OBJS			:= main.c linkstack.c$/;"	m
+TARGET	Makefile	/^TARGET			:= stack$/;"	m
+__LINKSTACK_H__	linkstack.h	2;"	d
+create_linknode	linkstack.c	/^linknode * create_linknode(datatype value)$/;"	f
+create_linkstack	linkstack.c	/^linkstack * create_linkstack(void)$/;"	f
+data	linkstack.h	/^	datatype		data;$/;"	m	struct:node
+datatype	linkstack.h	/^typedef int datatype;$/;"	t
+free_linkstack	linkstack.c	/^int free_linkstack(linkstack * s)$/;"	f
+get_top_value_linkstack	linkstack.c	/^int get_top_value_linkstack(linkstack * s, datatype * data)$/;"	f
+get_top_value_linkstack1	linkstack.c	/^int get_top_value_linkstack1(linkstack * s)$/;"	f
+head	linkstack.h	/^	linknode *	head;$/;"	m	struct:__anon1
+isempty_linkstack	linkstack.c	/^int isempty_linkstack(linkstack * s)$/;"	f
+isfull_linkstack	linkstack.c	/^int isfull_linkstack(linkstack * s)$/;"	f
+linknode	linkstack.h	/^}linknode;$/;"	t	typeref:struct:node
+linkstack	linkstack.h	/^}linkstack;$/;"	t	typeref:struct:__anon1
+main	main.c	/^int main(int argc, const char *argv[])$/;"	f
+n	linkstack.h	/^	int 		n;$/;"	m	struct:__anon1
+next	linkstack.h	/^	struct node *	next;$/;"	m	struct:node	typeref:struct:node::node
+node	linkstack.h	/^typedef struct node {$/;"	s
+pop_linkstack	linkstack.c	/^datatype pop_linkstack(linkstack * s)$/;"	f
+pop_linkstack1	linkstack.c	/^int pop_linkstack1(linkstack * s, datatype * data)$/;"	f
+push_linkstack	linkstack.c	/^int push_linkstack(linkstack * s, datatype value)$/;"	f

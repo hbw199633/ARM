@@ -1,0 +1,161 @@
+共享内存对象：(SHM)
+
+操作框架：
+
+key值==》申请对象==》挂载对象==》读写对象==》卸载对象 ==》删除对象
+		 shmget()    shmat()     内存读写     shmdt()      shmctl()
+
+
+1、申请对象
+#include <sys/ipc.h>
+#include <sys/shm.h>
+
+int shmget(key_t key, size_t size, int shmflg);
+功能：该函数使用公共key值向内核提出共享内存使用申请；
+参数： key  唯一键值
+	   size 要申请的共享内存大小
+	   shmflg 申请方式和权限，第一次 IPC_CREAT
+	   		  判断是否存在用  IPC_EXCL;
+返回值：成功 返回一个有效的shmid表示消息队列对象id
+		失败  -1；
+
+
+2、挂载对象(映射对象)
+
+void *shmat(int shmid, const void *shmaddr, int shmflg);
+功能：该函数可以将已经申请成功的共享内存挂载到本地进程的
+	  私有空间地址上。
+参数： shmid 共享内存id
+	   shmaddr 当前进程的可读写、空闲、同等大小 的内存挂载地址；
+	   		   NULL 表示由系统自动查找合适区域并挂载；
+	   shmflg 挂载到本地的内存读写权限；
+返回值：成功 返回已经挂载成功的本地内存
+		失败 NULL
+
+
+3、读写共享内存：所有的io读写方式都可以，对于共享内存的读写可以
+				 借鉴malloc堆区内存的读写方式；
+
+
+
+练习：
+	使用共享内存完成 父子进程间的 数字  字符串  结构体 三种
+	不同数据信息的进程间通信；
+
+	
+注意：共享内存挂载成功后，操作的内存在本地，目标内存在共享区域
+	  但是内存的所有操作一定要借鉴堆区内存。
+
+
+思考题：
+1、数据在共享内存中读操作之后是否还存在？会不会和消息队列
+   管道一样被取走？
+
+
+2、反复写共享内存，数据会不会自动向后移动还是原地覆盖？
+
+
+3、如果要写多个同类型数据，如何处理？比如 整形数组？
+
+
+4、卸载共享内存 （ 断开映射 ）
+
+int shmdt(const void *shmaddr);
+功能：该函数用于卸载之前已经挂载的共享内存；
+参数：shmaddr  要断开的地址
+返回值：成功 0
+		失败 -1；
+注意：使用完毕尽量将指针归零 shmaddr = NULL;
+
+5、删除共享内存
+int shmctl(int shmid, int cmd, struct shmid_ds *buf);
+功能：该函数用于修改共享内存的属性，可以用于删除共享内存；
+参数：shmid 共享内存id
+	  cmd   IPC_RMID 表示删除共享内存对象
+	  buf   NULL  表示属性不做调整；
+返回值：成功 0
+		失败 -1；
+
+
+练习：
+	使用共享内存完成两个进程之间的文件传送，确保文件传送的
+	正确性。
+
+=================================================================
+IPC 对象之信号量集 ；
+
+目的：配合共享内存完成进程间通信；
+
+使用框架：
+	key  ==>申请信号量集 ==》pv操作 ===》卸载删除信号量集
+		     semget()        semop()        semctl()
+
+1、申请信号量
+#include <sys/sem.h>
+
+int semget(key_t key, int nsems, int semflg);
+功能：该函数可以使用特定的key向内核提出信号量集使用申请；
+参数：key  唯一键值
+	  nsems 要申请的信号量个数；
+	  semflg 申请信号量的方式，IPC_CREAT IPC_EXCL 
+返回值：成功  semid 信号量集id
+		失败  -1；
+
+
+2、pv操作：
+   p 操作： 申请资源  sem_wait() ===>sem = sem -1;
+   v 操作： 释放资源  sem_post() ===>sem = sem +1;
+
+   int semop(int semid, struct sembuf *sops, unsigned nsops);
+   功能：该函数可以完成信号量集中指定信号量的pv操作；
+   参数： semid  信号量集id
+   		  sops   信号量集针对pv操作组织的结构体：如下
+		  struct sembuf
+		  {
+			unsigned short sem_num;  /* semaphore number */
+			short          sem_op;   /* semaphore operation */
+							  //sem_op = 1 表示v操作， 释放资源
+							    sem_op = -1表示p操作， 申请资源
+								sem_op = 0 默认值，阻塞等待
+			short          sem_flg;  /* operation flags */
+		  }
+		  nsops 操作信号量的个数；
+   返回值：成功 0
+   		   失败 -1；
+
+
+思考题：
+如何使用共享内存，完成如下功能：
+1、进程1 获取用户输入并写入共享内存
+2、进程2 获取共享内存数据并打印输出
+3、要求每次输入的数据能实时打印输出而不重复输出，当输入"quit"退出；
+
+
+3、删除信号量：
+int semctl(int semid, int semnum, int cmd, ...);
+功能：该函数可以修改信号量集合中指定信号量的属性，也可以删除信号量；
+参数：semid 要删除的信号量集id
+	  semnum 要删除的信号量集中的信号量编号
+	  cmd   IPC_RMID  删除信号量的宏
+	  ...   可变长参数，取决与cmd 的宏，一般犹如下两个宏：
+	  		cmd == SETVAL  则 可变长部分可以传入一个初始值
+			cmd == GETVAL  则 可变长部分可以不传数据，函数执行
+						   的返回值就是获取值
+返回值：成功 0
+		失败 -1；
+
+练习题：
+ 使用共享内存和信号量集 配合使用完成文本文件传送功能。
+
+
+
+IO+进程+线程 项目：
+
+	基于多进程/多线程完成指定文件的分割和还原；
+
+	./fenge   xxx  100  ===>file1  file2  file3.... file100 
+	./hebin   xxx  100  ===>xxx == file
+
+
+
+

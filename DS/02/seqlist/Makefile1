@@ -1,0 +1,5 @@
+seqlist:main.c seqlist.c
+	gcc main.c seqlist.c -o seqlist
+
+clean:
+	rm -rf seqlist

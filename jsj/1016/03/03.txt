@@ -1,0 +1,227 @@
+格式化输入输出：fscanf/fprintf
+
+1、格式化输入
+int fscanf(FILE *stream, const char *format, ...);
+功能：该函数可以从指定的格式文件中获取数据并存储到地址表中。
+参数：stream 要获取数据的文件流指针
+             如果stream == stdin  等价与 scanf
+             如果stream == fp   则fp关联的文件中获取
+      format 获取数据的格式，类似与scanf格式。
+      ...    可变长的地址表，用于存储获取的数据。
+返回值：成功 返回正确获取的数据个数
+        失败/文件结尾 EOF
+
+
+练习：
+1、在文本文件中有两列字符串数据，使用fscanf读该文件
+   并将文件内容打印输出。比如文件格式如下
+    xxx  yyy
+    aaaa  bbbb
+    1e23   asdffasd
+
+    文件的结尾判断依据是 fscanf的返回值为EOF。
+
+
+
+2、格式化输出：
+   int fprintf(FILE *stream, const char  *format,...);
+   功能：该函数可以向指定的流对象文件中写入固定格式的数据。
+   参数：stream 要输出数据的目标文件流指针
+                如果stream == stdout或 stderr 数据输出到屏幕
+                如果stream == fp 则数据输出到文件中。
+         format 要输出的数据格式，类似与printf
+         ...    可变长的输出表，一般与格式串匹配。
+    返回值：成功 输出的数据长度
+            失败  EOF
+
+
+
+练习：
+    提示用户输入学生姓名和成绩，将该信息存储到指定的文件中。
+    比如：
+    zhangsan  100
+    lisi       99.9
+
+
+2、使用fprintf+ fscanf函数完成如下文件的操作。
+    文件abc1.txt 有如下内容
+    1   zhangsan  100
+    2   lisi      99.9
+    3   wangwu    88.8
+    ....
+    文件abc2.txt  有如下内容
+    100  aaa   99.9
+    101  bbb   88.8
+    102  ccc   77.7
+
+    要求将abc2.txt的内容接到abc1.txt文件中，同时要
+    保证第一列的编号连续。
+    最终的abc1.txt
+    
+    1   zhangsan  100
+    2   lisi      99.9
+    3   wangwu    88.8
+    ....
+    10   aaa  99.9
+    11   bbb  88.8
+    12   ccc  77.7
+=============================================================
+
+标准io的读文件结尾判断：
+1、fgetc/fputc  ===> fgetc的返回值为EOF  == -1；
+2、fgets/fputs  ===> fgets的返回值为NULL == 0 ； ctags追踪
+3、fread/fwrite ===> fread的返回值为 0 ；
+4、fscanf/fprintf ==> fscanf的返回值为EOF == -1；
+
+
+判断文件结尾的函数： 
+int feof(FILE *stream);
+功能：该函数可以用来检测是否到达文件结尾，如果
+      已经是文件结尾则该函数返回真，否则返回假。
+
+参数：stream 要检测的目标文件流指针
+
+返回值：结尾   真
+        非结尾 假
+注意：该函数一定要在读操作之后再判断。
+
+标准io的文件定位操作：
+
+fseek()  ftell()  rewind()
+
+1、int fseek(FILE *stream, long offset, int whence);
+   功能：在指定的文件流对象中移动文件的流指针到具体的位置上。
+   参数：stream 要移动文件指针的文件流对象
+         offset 移动的偏移量，如果> 0 表示向文件末尾移动
+                              如果< 0 表示向文件开头移动
+                              如果= 0 表示不移动指针
+
+         whence  移动指针的开始位置：
+                 SEEK_SET  文件开头位置
+                 SEEK_CUR  文件当前位置
+                 SEEK_END  文件末尾位置
+
+    返回值：    成功 0
+                失败 -1；
+
+练习：
+  编写代码测试不同起始位置和不同偏移方向的
+  文件读写操作，查看是否可以正常读写。
+  注意：文件的打开方式。
+
+
+1、文件打开方式如果是 a/a+ fseek功能无效。
+2、如果文件偏移位置向文件开头位置，超过开头  fseek移动无效。
+3、如果文件偏移位置向文件后期偏移，超过末尾， 会形成空洞文件。
+4、设备文件fseek无效。
+
+
+2、long ftell(FILE *stream);
+   功能：该函数用于返回当前文件指针的位置。
+   参数：stream要返回的目标文件流指针
+   返回值：成功 返回距离文件开头的字节数
+           失败 -1
+
+3、void rewind(FILE *stream);
+   功能： rewind ==  fseek(fp,0,SEEK_SET);
+        将文件的指针移动到文件开头位置。
+   参数：stream 要移动指针的文件流对象
+   返回值：无
+
+练习：
+    使用任意一个标准io读写函数，配合文件定位函数，完成如下
+    功能：提示用户任意输入信息并写入文件，同时将写的文件内容
+    读出来并打印到屏幕，输入"quit"程序退出。
+    
+    abc 回车  ===》文件中存储abc
+              ===》屏幕显示文件中的abc
+    def 回车  ===》文件中追加存储def    
+              ===》屏幕再次显示文件中def
+    quit 回车 程序退出
+
+
+
+作业：
+    设计一个程序，可以提示用户输入ip地址和网关，并将用户
+    输入的信息配置到系统生效。
+
+     ./a.out
+
+    请输入要配置的ip：
+    xx.xx.xx.xx
+    是否要配置网管[y/n]  y
+    请输入要配置的网关
+    xx.xx.xx.xx 
+    是否生效[y/n] y
+
+    //程序开始配置  /etc/sysconfig/network-scripts/ifcfg-eth0 文件
+					 /etc/network/interfaces   文件
+
+    // 并启动服务生效  system("service network restart ");
+
+
+标准io 的学习路线：
+
+
+文件打开  ===》文件读写 （文件定位）===》文件关闭
+ fopen()        四组八个   fseek()        fclose()
+
+
+标准io函数之： 
+FILE *freopen(const char *path, const char *mode, 
+              FILE *stream);
+功能：该函数用于将已经打开的文件流指针转换到另一个
+      文件上。
+参数： path  新文件的路径+名称
+       mode  新文件的打开方式"r/r+ w/w+ a/a+"
+       stream 已经打开的文件流指针。
+返回值：成功 新文件的文件流指针。
+        失败 NULL；
+
+
+
+
+
+
+
+
+
+
+
+
+
+ctags 追踪：
+1、安装软件
+    1.1 判断是否安装软件： ctags --version
+    1.2 安装：
+        源码安装   获取源码包，编译， 安装
+        在线安装： yum install ctags
+
+tar -zxvf ctags-5.8.tar.gz 
+cd ctags-5.8
+ ./configure
+make
+make install
+
+
+2、使用ctags 追踪类型或宏名的原始定义
+
+    2.1 在系统目录建立索引文件
+        cd /usr/include
+        ctags -R *  ===>tags的大索引文件
+
+    2.2 追踪指定的类型
+        cd /usr/include 
+        vim -t  EOF   ===>EOF就是要追踪的目标类型
+        :q 退出
+
+        vim -t  NULL
+        vim -t  FILE
+        
+      注意：如果出现多个选项，则需要选择一个可能的目标
+        ctrl + ] 可以向下追，要将追踪的目标上放置光标
+        ctrl + t 可以往回退
+
+
+
+

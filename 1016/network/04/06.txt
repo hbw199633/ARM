@@ -1,0 +1,105 @@
+tcp并发服务器之 select 并发服务器
+
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+int select(int nfds, fd_set *readfds, fd_set *writefds,
+		fd_set *exceptfds, struct timeval *timeout);
+功能：该函数可以用于动态检测指定io接口上是否有数据流动
+	  并根据端口的数据情况保留有效描述符。同时如果没有
+	  数据流动则可以阻塞等待；
+
+参数： nfds  要监控的最大描述符编号，一般是前打开的描述符+1；
+             属于select函数的监控范围；
+	   readfds 要监控的目标描述符集，该集合中存储的是读描述符
+			   如果不监控该集合用NULL表示；
+	   writefds 要监控的目标写描述符集合；
+	   exceptfds 要监控的目标异常描述符集合；
+	   timeout  监控超时，一般用0 表示默认不超市，非0 则表示等待超时；
+
+返回值：成功 0 所有有效描符中只能保留一个有数据流动的描述符
+		失败 -1；
+
+使用select函数制作并发服务器的框架：
+
+fd_set  readfds = 0; ///有效读描述符集
+fd_set  allfds = 0;  ///所有描述符集
+FD_SET(sockfd,&readfds);
+allfds = readfds;  ///保证集合相等
+maxfd = sockfd; 
+while(1)
+{
+	readfds = allfds;
+	select(maxfd+1,&readfds,NULL,NULL,0);
+	for(i=sockfd;i<=maxfd+1;i++)
+	{
+		if( FD_ISSET(i,&readfds))
+		    {
+			if( i == sockfd)
+			{
+				confd = accept();
+				if(confd >maxfd)  maxfd = confd;
+				FD_SET(confd,&allfds); break;
+			}
+			else
+			{
+				ret = recv(i,buff,sizeof(buff));
+				if(ret <=0){
+					close(i);
+					FD_CLR(i,&allfds);}
+				else
+					printf("%s\n",buff);
+
+				break;
+			}
+		}
+	}
+}
+
+注意：要使用fd_set集合操作必须使用如下几个宏函数辅助；
+void FD_CLR(int fd, fd_set *set);
+功能：清理set集合中编号为fd的描述符；
+
+int  FD_ISSET(int fd, fd_set *set);
+功能：判断fd描述符，是否在set集合当中；
+	  如果在集合set中则返回真，否则返回假；
+
+void FD_SET(int fd, fd_set *set);
+功能：将fd编号的描述符加入到set集合中；
+
+void FD_ZERO(fd_set *set);
+功能：将set集合中的所有描述符全部删除；
+
+
+练习：
+  根据以上代码框架编写select并发服务器，可以接入
+  多个客户端信息，并将每个客户端的ip地址和信息
+  关联打印。
+
+思考题：
+1、readfds中是否需要加入 0 1 2 描述符到集合中？
+	可以没有；初始集合中的描述符，应该是 sockfd;
+
+2、select 每次检测完毕是否就剩一个有效描述符？
+	在sleect前后分别打印集合中有效描述符；
+
+3、每个客户端的新链接，一定会是sockfd的值？怎么验证？
+	gdb或者打印每次i值和sockfd的值对比；
+
+=============================================================
+
+并发服务器实践：
+
+任意选择一种并发服务器模型，完成如下功能，要求：
+客户端可以将一个文件拆分成若干大小的文件并使用并发发送给服务器；
+
+服务器可以接收来自于客户端的文件并在服务器端将文件以并发服务器
+的方式接收并还原成原始文件。
+
+服务器必须是并发服务器，客户端可以单进程；
+
+
+
+

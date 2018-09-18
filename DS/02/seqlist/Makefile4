@@ -1,0 +1,12 @@
+OBJS = main.o seqlist.o
+cc = gcc
+FLAGS = -Wall -g -c
+
+seqlist:$(OBJS)
+	$(cc) $(OBJS) -o $@
+
+main.o:main.c
+	$(cc) $(FLAGS) $< -o $@
+
+seqlist.o:seqlist.c
+	$(cc) $(FLAGS) $< -o $@

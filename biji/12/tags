@@ -1,0 +1,42 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+add	fun.c	/^int add(int a,int b)$/;"	f
+add	jsq/add.c	/^int add(int a,int b)$/;"	f
+add_mode	jsq_point.c	/^int add_mode(int a,int b)$/;"	f
+add_mode	quanju.c	/^int add_mode(int a,int b)$/;"	f
+div	fun.c	/^int div(int a,int b)$/;"	f
+div	jsq/div.c	/^int div(int a,int b)$/;"	f
+fun_arv	fun_arr/fun_arr.c	/^float fun_arv(float src[],int a)$/;"	f
+fun_input	fun_arr/fun_arr.c	/^int fun_input(float src[],int a)$/;"	f
+fun_output	fun_arr/fun_arr.c	/^int fun_output(float arv)$/;"	f
+input_mode	jsq_point.c	/^int input_mode(int *pa,int *pb)$/;"	f
+input_mode	quanju.c	/^int input_mode(int *pa,int *pb)$/;"	f
+main	char_put.c	/^int main(int argc,const char* argv[])$/;"	f
+main	fun.c	/^int main(int argc,const char* argv[])$/;"	f
+main	fun_arr/main.c	/^int main(int argc,const char* argv[])$/;"	f
+main	fun_no_return.c	/^int main(int argc,const char* argv[])$/;"	f
+main	jsq/main.c	/^int main(int argc,const char* argv[])$/;"	f
+main	jsq_point.c	/^int main(int argc,const char* argv[])$/;"	f
+main	quanju.c	/^int main(int argc,const char* argv[])$/;"	f
+main	swap.c	/^int main(int argc,const char* argv[])$/;"	f
+main	test.c	/^int main(int argc,const char* argv[])$/;"	f
+mul	fun.c	/^int mul(int a,int b)$/;"	f
+mul	jsq/mul.c	/^int mul(int a,int b)$/;"	f
+output_mode	jsq_point.c	/^int output_mode(int a)$/;"	f
+output_mode	quanju.c	/^int output_mode(int a)$/;"	f
+pri	fun_no_return.c	/^void pri()$/;"	f
+printf_out	char_put.c	/^void printf_out(int c)$/;"	f
+printf_out	fun.c	/^void printf_out(int a)$/;"	f
+printf_out1	char_put.c	/^int printf_out1(int c,int a)$/;"	f
+printf_out1	fun.c	/^void printf_out1(int a)$/;"	f
+sub	fun.c	/^int sub(int a,int b)$/;"	f
+sub	jsq/sub.c	/^int sub(int a,int b)$/;"	f
+sub_mode	jsq_point.c	/^int sub_mode(int a,int b)$/;"	f
+sub_mode	quanju.c	/^int sub_mode(int a,int b)$/;"	f
+swap	swap.c	/^int swap(int *pa,int *pb)$/;"	f
+x	quanju.c	/^int x = 1;$/;"	v
+zhuanhuan	test.c	/^int zhuanhuan(int *pa)$/;"	f

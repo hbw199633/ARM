@@ -1,0 +1,19 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+FLAGS	Makefile	/^FLAGS = -Wall -g -c$/;"	m
+OBJS	Makefile	/^OBJS = main.o bitree.o$/;"	m
+_BITREE_H_	bitree.h	10;"	d
+_node_	bitree.h	/^typedef struct _node_$/;"	s
+bitree	bitree.h	/^}bitree;$/;"	t	typeref:struct:_node_
+cc	Makefile	/^cc = gcc$/;"	m
+create_bitree	bitree.c	/^bitree *create_bitree(int va,int size)$/;"	f
+create_node	bitree.c	/^bitree *create_node(datatype va)$/;"	f
+data	bitree.h	/^	datatype		data;$/;"	m	struct:_node_
+datatype	bitree.h	/^typedef int datatype;$/;"	t
+lchild	bitree.h	/^	struct _node_	*lchild;$/;"	m	struct:_node_	typeref:struct:_node_::_node_
+main	main.c	/^int main(int argc,const char* argv[])$/;"	f
+rchild	bitree.h	/^	struct _node_	*rchild;$/;"	m	struct:_node_	typeref:struct:_node_::_node_

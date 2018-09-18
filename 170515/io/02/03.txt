@@ -1,0 +1,140 @@
+标准io的文件操作框架：
+	打开  ===》 读写(定位)		===》关闭
+   fopen       fgetc/fputc       fclose
+			   fgets/fputs
+			   fread/fwrite
+			   fscanf/fprintf
+
+问题：在同一份代码中不能同时进行读写操作。
+解决方案： 移动文件指针  ===》定位
+
+ int fseek(FILE *stream, long offset, int whence);
+ 功能:该函数可以对指定文件流对象中的文件指针进行偏移操作。
+ 参数：stream 要移动的目标文件流对象
+	   offset 移动的偏移量，单位是字节。
+				如果偏移量 > 0 则向文件末尾偏移
+				如果偏移两 < 0 则向文件开头偏移
+				如果偏移量 = 0 则文件指针不同
+	   whence 移动指针的起始位置，有如下三个宏表示。
+				SEEK_SET   指针偏移的起始位置为文件开头位置
+				SEEK_CUR   指针偏移的起始位置为当前指针位置
+				SEEK_END   指针偏移的起始位置为文件末尾位置
+ 返回值：成功 返回0
+		 失败 -1；
+
+练习：
+	编写fgets和fputs 函数在同一份代码中的读写操作，并验证
+	效果，考虑如下问题；
+	
+	1、SEEK_SET 和 SEEK_END 有什么差异
+		SEEK_SET 开头开始偏移，只能向后偏移。
+		SEEK_END 末尾开始偏移，可以向前后偏移。
+		
+	2、offset 偏移量如果大于/小于文件实际长度会怎样？
+         offset > 实际文件末尾位置，不能读，能不能写？
+		                        ===》能写 ==》空洞文件
+
+		 offset < 实际文件开始位置，能不能读写？读写的内容会怎样？
+					===>读写是在尚未偏移之前的位置。
+
+	3、所有的文件打开都支持定位操作？
+		设备文件不支持定位操作；
+		a/a+ 方式打开文件不支持定位操作；
+
+void rewind(FILE *stream);
+
+==  (void)fseek(stream, 0L, SEEK_SET);
+
+功能：该函数用于快速将文件指针偏移到文件开头。
+
+long ftell(FILE *stream);
+功能：该函数用户获取当前文件的文件指针距离文件开头位置的字节数。
+参数： streaem 文件流对象
+返回值：成功 返回当前指针位置距离开头的字节数
+		失败 -1
+
+常用规则：
+	配合ftell + fseek  ==》计算文件大小。
+
+练习：
+	1、使用ftell+ fseek制作一个工具可以测试任意文件的大小。
+
+    2、使用任意标准IO函数，配合文件定位函数，完成用户任意
+		输入信息并写入指定文件，当用户输入"quit"的时候程序
+		退出，每次提交一次用户输入就将输入信息写文件并从文件
+		中读取并打印。
+
+2、问题： 如果文件到达结尾，对文件结尾的判断不准确。
+		fgetc/fputc ===> fgetc ===> 返回值 EOF
+		fgets/fputs ===> fgets ===> 返回值 NULL
+		fread/fwrite ==> fread ===> 返回值 0
+		fscanf/fprintf==>fscanf===> 返回值 EOF
+
+		===》以上判断文件结尾的依据不准确。
+		===》feof()
+int feof(FILE *stream);
+功能：该函数可以用于检测指定的文件流对象是否到达文件结尾
+参数：stream 要检测的文件流对象
+返回值：到达结尾  返回非0
+		没有达到结尾  返回0；
+注意：该操作一定要在IO操作之后进行判断。
+
+3、文件已经打开后的重置功能：
+
+	printf("xxx\n") === fprintf(stdout,"xx\n");
+
+	===>freopen()
+FILE  *freopen(const  char *path, const char *mode, FILE *stream);
+功能：该函数可以将一个已经打开的文件流指针转换到指定的其他文件上。
+参数：path 新文件的路径+名称
+	  mode 新文件的打开方式，（r/r+ w/w+ a/a+）
+	  stream 已经打开的流对象。
+返回值：成功 新的流对象
+	   失败 NULL；
+
+
+	/dev/tty 
+
+功能详见： freopen.c
+
+
+4、系统错误捕获 ==》perror()
+	perror()  ==  strerror() ===>string.h
+
+	char *strerror(int errnum);
+	功能：根据已知的errnum匹配并返回该errnum对应的系统错误信息。
+	参数：errnum 系统错误码，范围 1 - 132
+	返回值： > 0 都是系统错误信息的字符串
+			= 0  系统无错的access
+			< 0  不会返回，预留给用户自定义
+
+
+
+作业：
+   1、设计一个程序可以在主函数传参数的时候传入文件名称和大小，该程序
+      会根据传入的文件名称和大小进行文件分割，比如：
+	./a.out   xxxx   1024 ...   ===>会将xxxx文件分割成每个大小为1024 字节的文件
+			           ===》并以xxx为前缀以数字为编号的文件存储在当前文件
+
+	xxx_0   ===>1024字节
+	xxx_1
+	xxx_2 .....
+
+   2、设计一个还原程序，可以将之前的分割文件和并为原始文件，要求必须完全一致，不能
+      有差异，要经过diff命令检测一致性。程序比如：
+	./b.out  xxx 1024 ....
+
+	===> xxxx 文件必须和原始文件一致。
+
+
+
+
+作业：
+	设计一个程序，可以提示用户输入网络配置信息，并根据
+	用户输入的信息，写网络配置文件，实时生效。
+	/etc/sysconfig/network-scripts/ifcfg-ethx
+
+	system("service network restart");
+
+	
+

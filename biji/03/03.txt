@@ -1,0 +1,87 @@
+服务器：
+NFS==>网络文件传输协议
+FTP==>文件传输协议
+TFTP==>简易版文件传输协议
+SSH==> 远程访问主机服务
+=============================================
+NFS是网络上文件共享，完成数据的传送，具有文件的所有具体特性
+服务器端和客户端：
+客户端：默认已经安装
+服务器端：
+安装以下软件：
+	nfs-utils-1.2.3-39.el6.i686.rpm
+	nfs-utils-lib-1.1.5-6.el6.i686.rpm
+	rpcbind-0.2.0-11.el6.i686.rpm
+	rpm -qa 查看
+修改服务器的配置文件
+	cd /etc
+	看是否有exports文件，没有则创建touch
+	添加内容如下
+	/mnt/share  192.168.0.xxx/24(ro,sync,no_root_squash)		^本机ip地址
+	保存并退出
+重启服务
+	service nfs restart
+	如果还mount不上，关闭防火墙
+	service iptables stop 
+测试服务：
+	查看服务器是否共享
+	showmount -e 192.168.0.xxx
+简易版shell脚本：
+1、touch xxx.sh
+2、vim xxx.sh
+3、编写命令并保存退出
+4、chmod 755 xxx.sh
+5、./xxx.sh
+详见copy.sh
+===========================================================
+vim编辑器
+	三种模式：命令模式、低行模式、插入模式
+1、插入模式
+	a A i I o O s S
+2、命令模式
+	按ESC经如命令模式
+	复制：	yy复制光标所在行
+			nyy复制光标所在行及以下的n行
+	移动：	方向键 h向前 j向下 k向上 l向后 
+	粘贴：	p
+	删除：	dd 删除光标所在行
+			ndd删除光标所在行及以下n行
+			x删除一个字  DELETE
+	撤销：	u
+	撤销的撤销：ctrl+r
+	文件开头：  gg
+	文件结尾：  G
+	选择：	v	按字选择
+			shift+v 行选择
+			ctrl+v  块选择
+	全选：ggvG Gvgg
+	翻页：前翻 ctrl+b	PgUp
+		  后翻 ctrl+f	PgDn
+	行前：^   Home键
+	行尾：$	  End键
+	排版：+=键    
+	打标: m	
+	跳标：`
+	标记：#	
+3、低行模式		左下角出现：则为低行模式
+	wq	：保存并退出  x
+	wq!	：强制行保存并退出
+	w	：保存
+	w!	：强制性保存
+	q	：退出
+	q!	：强制性退出不保存
+	wq! /xxx/yyy/zzz 将文件保存至某路径下
+	查找：/字符串 n下一个
+				  N上一个
+	替换：g/from/s//to/g
+		  %s/from/to/g
+		  将from改为to
+	多屏显示：vsp 文件名 纵向显示
+			  sp  文件名 横向显示
+			  切换屏幕 ctrl+ww
+	vim中呼叫shell: shell
+					exit退出
+	跳到制定行：直接加行号
+	
+	
+

@@ -1,0 +1,165 @@
+文件目录操作和文件属性获取：
+
+1、文件目录操作：
+    打开目录 ==》遍历目录 ==》关闭目录
+    opendir()    readdir()    closedir()
+
+
+打开目录：
+
+#include <sys/types.h>
+#include <dirent.h>
+
+DIR *opendir(const char *name);
+功能：该函数可以打开指定路径+名称的目录。
+参数：name 目录所在的路径+名称
+返回值：成功 目录流指针，指向一个打开的目录
+        失败 NULL
+
+
+
+int closedir(DIR *dirp);
+功能：关闭指定的目录流指针
+参数：dirp 要关闭的目录
+返回值：成功 0
+        失败 -1
+
+
+遍历目录：
+struct dirent *readdir(DIR *dirp);
+功能：该函数可以在已经打开的目录中读取一次目录文件信息。
+参数：dirp 已经打开的目录流指针
+返回值：成功 返回文件信息结构体
+        失败/目录末尾 NULL
+
+
+
+
+练习：
+    设计一个程序，可以任意指定目录并显示该目录中的
+    非隐藏文件名称。 
+
+补充一个函数： 切换工作目录
+int chdir(const char *path);
+功能：切换当前的工作目录到指定的位置。
+参数： path 要切换到的目标目录路径
+返回值：成功 0
+        失败 -1
+==============================================================
+
+文件属性信息获取。
+
+命令： ls -l 可以列出指定目录或文件的详情。
+       其中包含了众多的文件属性信息。
+
+目标：自己编程实现类似于 ls 程序的效果可以查看文件详情
+
+方法： 
+1、如何获取文件属性信息。
+    stat 命令比 ls 命令列出的属性更全。
+    且：stat 有系统调用接口函数可以编程使用。
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+int stat(const char *path, struct stat *buf);
+功能：通过该函数可以获取指定文件的属性信息。
+参数：path 要获取属性信息的文件路径+名称，可以是
+      所有文件不限制文件类型。
+      buf 用于获取文件信息后数据返回的指针
+       buf对应的结构体信息，详见man 2 stat
+
+返回值：成功  0
+        失败  -1
+
+文件类型：linux 7 种文件类型
+
+普通文件  -
+目录文件  d 
+链接文件  l        /dev/shm
+
+字符设备文件  c    /dev/tty
+块设备文件    b    /dev/sda
+
+管道文件      p    ./fifo
+套接字文件    s    /dev/log
+
+stat()  ===>默认查看的是文件的属性
+lstat() ===>查看文件属性，如果文件是链接文件则显示链接属性
+fstat() ===>文件已经以文件io打开之后根据fd获取其属性。
+
+文件的类型和权限都在  st_mode 的成员变量中存储。	
+
+
+
+
+用户信息获取：  /etc/passwd  //用户配置文件
+根据用户uid获取其用户信息的流程：
+1、头文件  pwd.h  ===>/etc/passwd
+   函数：  getpwuid()== struct passwd *getpwuid(uid_t uid)
+           功能：通过该函数可以将uid对应的用户信息以返回值
+                 形式获取。
+           参数： uid 用户id
+           返回值：成功 获取用户信息
+                   失败 NULL
+        
+            struct passwd {
+               char   *pw_name;       /* username */
+
+
+2、组用户信息获取
+    头文件： grp.h  ==>/etc/group
+    函数：  getgrgid() ==== struct group *getgrgid(gid_t gid);
+            功能：通过该函数可以将用户组信息以返回值形式返回。
+            参数：gid 用户组id  
+            返回值：成功 返回组信息
+                    失败 NULL
+            struct group {
+               char   *gr_name;       /* group name */
+
+
+3、时间处理
+
+   3.1 已知时间秒 转换格式  buff.st_mtime == 文件秒数
+
+    头文件： time.h    
+    函数：   struct tm *localtime(const time_t *timep);
+    功能：  该函数可以将时间的秒值转换成年月日，时分秒格式。
+    参数：  timep  时间秒的数字地址
+    返回值：成功 格式化后的结构体，tm
+            失败 NULL
+    
+    时间结构体 tm 如下格式
+         struct tm {
+               int tm_sec;         /* seconds */
+               int tm_min;         /* minutes */
+               int tm_hour;        /* hours */
+               int tm_mday;        /* day of the month */
+               int tm_mon;         /* month */  + 1 
+               int tm_year;        /* year */   + 1900     
+
+   3.2 实时获取当前时间
+         time_t time(time_t *t);
+         功能：该函数可以获取当前函数执行瞬间的秒数。
+         参数：t 用于存储时间秒的外部变量
+         返回值：成功 返回的 == t
+                 失败 -1；
+        
+
+
+练习：
+    根据以上知识点，将目录操作和文件属性信息获取功能
+    分别封装成独立函数并在main中调度，实现任意文件和
+    目录的ls -l 效果。
+
+    ls -l  ===》默认显示当前目录中所有文件属性
+    ls -l xxx ===>显示指定的xxx文件或者目录中所有文件属性。
+
+    ./a.out ====>默认显示当前目录所有文件属性
+    ./a.out xxx ===>显示xxx目录或者文件的属性信息。
+
+    注意事项：如果出现问题，考虑是否由于 chdir函数导致。
+
+
+

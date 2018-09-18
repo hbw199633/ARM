@@ -1,0 +1,112 @@
+/* ************************************************************************
+	> File Name: 06.txt
+	> Function: 
+	> Author: hlq
+	> Mail: hlqlinux@gmail.com 
+	> Created Time: 2017年02月20日 星期一 09时43分37秒
+	> Version: v1.0
+ ************************************************************************/
+
+ 栈：
+ 	FILO  LIFO
+
+ 队列：
+ 	特征：
+ 	FIFO	LILO
+关键词：
+	队头：表示从队列中获取数据的固定端。
+	队尾：表示往队列中添加数据的固定端。
+	入队：向队列中增加数据。
+	出队：从队列获取数据。
+	队满：表示队列存储数据的容量已经达到上限。
+	队空：表示队列中没有数据。
+
+队列的存储方式：
+	顺序队列：
+	链式队列：
+
+
+
+顺序队列：
+
+#define N 100
+
+typedef int datatype;
+
+typedef struct {
+	datatype	data[N];
+	int head;
+	int tail;
+}sequeue;
+
+
+队列的操作：
+
+	创建队列：
+sequeue * create_sequeue(void)
+{
+
+}
+
+
+	判断队列是否满:
+	入队：
+
+	判断队列是否空：
+	出队：
+
+	释放队列：
+
+
+
+
+链式队列：
+
+节点结构体：
+
+typedef int datatype;
+
+typedef struct node {
+	datatype		data;
+	struct	node *  next;
+}linknode;
+
+队列结构体：
+
+typedef struct {
+	linknode	* tail;
+	linknode	* head;
+	int 		count;
+}linkqueue;
+
+
+linknode * create_linknode(datatype value)
+{
+
+}
+
+linkqueue * create_linkqueue(void)
+{
+
+}
+
+
+q->tail->next = L;
+q->tail = L;
+q->count++;
+
+
+int isempty_linkqueue(linkqueue * q)
+{
+}
+
+int exit_linkqueue(linkqueue *, datatype * data)
+{
+
+}
+
+
+==================================
+32个关键字：
+	const,enum,union,register,static
+

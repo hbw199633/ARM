@@ -1,0 +1,20 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+N	seqlist.h	5;"	d
+add_pos_seqlist	seqlist.c	/^int add_pos_seqlist(seqlist * seq, int pos, datatype value)$/;"	f
+add_tail_seqlist	seqlist.c	/^int add_tail_seqlist(seqlist * seq, datatype value)$/;"	f
+create_seqlist	seqlist.c	/^seqlist * create_seqlist(void)	\/* 指针函数 *\/$/;"	f
+data	seqlist.h	/^	datatype data[N];$/;"	m	struct:__anon1
+datatype	seqlist.h	/^typedef int datatype;$/;"	t
+delete_pos_seqlist	seqlist.c	/^int delete_pos_seqlist(seqlist * seq, int pos)$/;"	f
+delete_value_seqlist	seqlist.c	/^int delete_value_seqlist(seqlist * seq, datatype value)$/;"	f
+free_seqlist	seqlist.c	/^int free_seqlist(seqlist * seq)$/;"	f
+last	seqlist.h	/^	int last;			\/* 有效数据的个数 *\/$/;"	m	struct:__anon1
+main	main.c	/^int main(int argc, const char *argv[])$/;"	f
+modify_value_seqlist	seqlist.c	/^int modify_value_seqlist(seqlist * seq, datatype oldvalue, datatype newvalue)$/;"	f
+seqlist	seqlist.h	/^}seqlist;				\/* type *\/$/;"	t	typeref:struct:__anon1
+show_seqlist	seqlist.c	/^int show_seqlist(seqlist * seq)$/;"	f

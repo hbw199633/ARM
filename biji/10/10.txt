@@ -1,0 +1,31 @@
+字符串常用操作函数
+注意：字符串处理函数都在<string.h>中
+strlen();
+	#include <string.h>//头文件
+	size_t strlen(const char *s);//函数定义
+	功能：计算参数指定的字符串有效的字符个数
+	参数：s可以是数组名,也可以是指针表示的字符串的开始
+	返回值：返回字符串的长度
+strcpy():
+	#include <string.h>//头文件
+	char *strcpy(char *dest, const char *src);
+	功能:将指定的数据src内容拷贝到dest目标内存区
+	参数:src	数据的源内容
+		 dest   数据的存储目标内存
+	返回值:成功 返回的是指向dest的指针
+		   失败 NULL
+strcmp():字符串数据比较过程
+	#include <string.h>//头文件
+	int strcmp(const char *s1, const char *s2);
+	功能：将指定的字符串s1与指定的字符串s2进行比较
+	参数：src	字符串1
+		  dest	字符串2
+	返回值：成功 相等0值 不相等 非0值
+strcat():字符串串接
+	#include <string.h>//头文件
+	char *strcat(char *dest, const char *src);
+	功能：将src坐在的字符串串接到dest字符串的后边
+	参数：src 源字符串
+		  dest目标字符串
+	返回值:成功 指向目标的字符串
+		   失败 NULL

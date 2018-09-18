@@ -1,0 +1,25 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+FLAGS	Makefile	/^FLAGS = -Wall -g -c$/;"	m
+OBJS	Makefile	/^OBJS = main.o Linkqueue.o$/;"	m
+_LINKQUEUE_H_	Linkqueue.h	10;"	d
+_node_	Linkqueue.h	/^typedef struct _node_$/;"	s
+cc	Makefile	/^cc = gcc$/;"	m
+count	Linkqueue.h	/^	int		 count;$/;"	m	struct:__anon1
+create_linknode	Linkqueue.c	/^linknode *create_linknode(datatype va)$/;"	f
+create_linkqueue	Linkqueue.c	/^linkqueue *create_linkqueue()$/;"	f
+data	Linkqueue.h	/^	datatype		data;$/;"	m	struct:_node_
+datatype	Linkqueue.h	/^typedef int datatype;$/;"	t
+empty_linkqueue	Linkqueue.c	/^int empty_linkqueue(linkqueue *lq)$/;"	f
+enter_linkqueue	Linkqueue.c	/^int enter_linkqueue(linkqueue *lq,datatype va)$/;"	f
+exit_linkqueue	Linkqueue.c	/^int exit_linkqueue(linkqueue *lq,datatype *va)$/;"	f
+head	Linkqueue.h	/^	linknode *head;$/;"	m	struct:__anon1
+linknode	Linkqueue.h	/^}linknode;$/;"	t	typeref:struct:_node_
+linkqueue	Linkqueue.h	/^}linkqueue;$/;"	t	typeref:struct:__anon1
+main	main.c	/^int main(int argc,const char* argv[])$/;"	f
+next	Linkqueue.h	/^	struct _node_	*next;$/;"	m	struct:_node_	typeref:struct:_node_::_node_
+tail	Linkqueue.h	/^	linknode *tail;$/;"	m	struct:__anon1

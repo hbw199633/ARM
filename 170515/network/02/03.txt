@@ -1,0 +1,178 @@
+常见网络工具：
+
+telnet netstat   ping   arp   wireshark  tcpdump
+
+
+1、telnet  远程登录工具
+
+	格式：telnet  目标主机IP地址  目标端口
+	eg：  telnet  xx.xx.xx.xx     yy
+		
+	安装： rpm -ivh telnet ....rpm
+
+	注意：远程登录的时候，ip必须写，端口可以不写
+		  默认的登录端口是23 号；
+
+2、ping  命令
+
+   测试当前主机与目标主机的物理链路是否畅通；
+   格式; ping  目标主机ip/目标主机域名
+   eg：  ping  1.1.1.1
+         ping  www.xxx.com
+
+3、netstat 命令
+
+	netstat -lnp |grep 8888
+	netstat -nt   只查询tcp协议的使用情况
+	netstat -nu   只查询udp协议的使用情况
+	netstat -ni   查询所有接口的使用情况
+
+	man netstat
+
+
+4、arp 命令：
+
+	arp -an   ==>查看当前主机的arp表信息
+
+	arp -d ip地址信息；
+
+
+=============================================
+
+5、抓包工具
+
+	5.1 wireshark ===>第三方软件，需要单独安装；
+
+	查看系统中是否具有该软件：
+	wireshark  回车
+
+rpm -ivh wireshark-1.8.10-4.el6.i686.rpm libsmi-0.4.8-4.el6.i686.rpm 
+
+rpm -ivh wireshark-gnome-1.8.10-4.el6.i686.rpm 
+
+   wireshark 的过滤规则：
+   1、根据数据包中ip地址信息过滤
+   	 ip.src == xx.xx.xx.xx
+	 ip.dst == xx.xx.xx.xx
+	 ip.host == xx.xx.xx.xx
+
+
+   2、根据数据包中port地址信息过滤
+   	 tcp.port == 8888
+	 udp.port == 9999
+
+	 tcp.srcport == 8888
+	 tcp.dstport == 9999
+	 udp.srcport == 7777
+	 udp.dstport == 6666
+
+  3、根据协议抓包：
+  	 icmp    ping程序的包
+	 tcp
+	 udp
+	 arp
+
+  4、组合抓包
+  	  根据各个关系进行 与操作： and
+
+	  ip.src == 192.168.0.199 and tcp.port == 8888
+
+	  根据各个关系进行 或操作： or
+
+	  ip.src == 192.168.0.180 or ip.src == 192.168.0.170
+
+	  根据各个关系进行 非运算： !
+	  ip.src != 192.168.0.180
+
+练习：
+1、如何使用wireshark工具抓取互联网数据包？
+
+
+2、如何使用wireshark工具抓取ftp程序的登录用户名和密码？
+
+
+6、 tcpdump ===>linux下的专用抓包神器；
+			www.tcpdump.com ===>libpcap 库
+
+	以管理员身份运行 tcpdump --version
+	如果执行的规则不正确：tcpdump: syntax error
+
+	1、通用抓包
+		tcpdump -n  -i eth0
+
+	2、根据ip地址抓包：
+		tcpdump -n host 192.168.0.199
+		tcpdump -n  src 192.168.0.199
+		tcpdump -n  dst 192.168.0.199
+
+	3、根据port地址抓包：
+		tcpdump -n port 8888
+		tcpdump -n src port 8888
+		tcpdump -n dst port 9999
+		tcpdump -n tcp port 7777
+		tcpdump -n udp port 6666
+
+	4、根据协议类型抓包：
+		tcpdump -n icmp
+		tcpdump -n tcp
+		tcpdump -n udp
+		...
+	
+	5、根据接口抓包：
+		tcpdump -n -i eth0
+		tcpdump -n -i lo
+		tcpdump -n -i ethx
+
+	6、根据各个不同关系组合抓包
+		与：and
+		tcpdump -n src 192.168.0.199 and dst 192.168.0.1
+
+		或：or
+		tcpdump -n src 192.168.0.199 or src 192.168.0.198
+
+	7、所有以上命令 都可以参考man tcpdump 查看详细操作
+
+
+练习：
+	在自己机器和同桌机器上分别启动服务器和客户端程序
+	使用以上规则将每个抓包方式测试一遍；
+
+
+	8、如果要查看数据包的详情
+		tcpdump -n  -x  其他规则
+
+		tcpdump -n  其他规则 -w aaa.cap
+
+		wireshark  aaa.cap
+
+练习2： 使用tcpdump抓取ftp的登录用户名和密码并
+	    保存成cap包文件，使用wireshark查看是否
+		可见用户名和密码。
+
+====================================================
+
+TCP 通信过程中的三次握手和四次挥手；
+
+1、三次握手：tcp通信的建立阶段；
+	pc1 ===>SYN===> pc2
+	pc1<===SYN ACK==pc2
+	pc1 ===>ACK===> pc2
+
+思考题：
+	根据以上知识点配合抓包工具和服务器/客户端程序
+	测试并找出服务器和客户端分别是在哪个函数上完成
+	三次握手的。
+
+	客户端：connect();
+	服务器：listen();
+
+2、四次挥手： tcp通信的结束阶段：
+
+   pc1 ===>FIN ===>pc2
+   pc1 <==ACK=====pc2
+
+   pc1 <===FIN ===pc2
+   pc1 ====ACK===>pc2
+
+
+

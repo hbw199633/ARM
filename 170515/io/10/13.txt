@@ -1,0 +1,241 @@
+进程间通信之 有名管道
+
+特征：类似无名管道，可以完成进程间通信。
+	  所有IO操作基于文件IO函数
+	  一般有名管道简称： FIFO
+	
+操作框架：
+创建管道 ==》打开管道 ==》读写管道 ==》关闭管道 ==》销毁管道
+mkfifo()    open        read/write    close       unlink
+
+1、创建有名管道：
+#include <sys/types.h>
+#include <sys/stat.h>
+
+int mkfifo(const char *pathname, mode_t mode);
+功能：该函数可以创建一个有名管道。
+参数:pathname 要创建的目标有名管道的路径+名称
+     mode  要创建的有名管道权限。
+返回值：成功 0
+		失败 -1；
+
+
+2、打开管道： open
+
+   普通已有文件打开方式：
+	int fd  = open("./filename", 
+	                O_RDONLY/O_WRONLY/O_RDWR);
+   有名管道文件打开方式：
+	int fd_read = open("./fifo",O_RDONLY);
+	int fd_write = open("./fifo",O_WRONLY);
+   原因:管道都是半双工，只能有一个读一个写，不能同时读写
+
+
+3、读写管道：文件io的read/write
+	
+	读： read()
+	写； write();
+
+4、关闭管道： close()
+
+练习：
+	设计一个有名管道，和不同的两个独立进程使用该管道完成
+	数字的传送， 完成结构体的传送。
+
+思考题：
+1、如何测试并验证fifo是否需要同步？以及同步的函数位置？
+	open 函数  ====》如果没有读写端，则另一端在open位置阻塞。
+
+2、打开有名管道之后的读写是否与无名管道一样？存储容量是多少 ？
+	先进先出， 读完后数据取走，容量 65535 字节
+
+3、如果在操作有名管道之前，如何判断是否有名管道已经存在？
+	EEXIST 宏 ===》mkfifo()
+
+4、有名管道和普通文件有什么不同？为什么要用有名管道而不是普通文件？
+	优点：文件不占大小  写入的数据可以直接取走
+		  fifo类型  容量恒定
+
+	缺点：不能修改   不能定位  必须要同步
+
+删除有名管道：
+int unlink(const char *pathname);
+功能：使用该函数可以删除指定路径+名称的有名管道
+参数：pathname 要删除的目标有名管道
+返回值：成功 0
+		失败 -1
+
+工程实践：
+封装一组函数，可以完成在任意其他代码中调用这些函数完成
+整体对有名管道的操作：比如
+
+myfifo.h
+int		fifo_read()
+int		fifo_write()
+int		fifo_create(char *fifo_name)
+int     fifo_unlink()
+
+myfifo.c
+
+int  fifo_read()
+{
+...
+}
+
+
+main.c
+
+   fifo_create("./test");
+
+   fifo_wirte(fifo,"abc",5);
+
+   fifo_read(fifo,buff,sizeof(buff));
+================================================================
+进程间通信之 信号通信
+
+kill  -信号   pid
+
+
+1、kill 信号发送端进程，需要自定编程实现。
+
+2、信号： kill -l 的系统预定义信号
+
+3、pid  信号接收端进程，需要自定义编程实现。
+
+
+1、信号发送端：===》系统有一个命令 kill  ==>man 2 kill
+
+#include <sys/types.h>
+#include <signal.h>
+
+int kill(pid_t pid, int sig);
+功能：从当前进程中向目标pid进程发送编号为sig的信号。
+参数：pid  要发送的目标进程pid号
+	  sig  要发送的信号编号，参考 kill  -l
+返回值：成功 0
+		失败 -1；
+
+练习：
+	根据以上函数完成一个模拟kill命令的程序，mykill
+	可以给指定的进程类似kill命令一样发送信号。
+
+	kill -9  12345
+	kill 12345  == kill -15 12345
+
+	mykill -9 12345
+
+特殊的发送函数：
+1、int raise(int sig);
+   功能：该函数可以当前进程发送信号。
+   参数：sig 要发送的信号
+   返回值：成功 0
+		   失败 -1；
+   等价关系： kill(getpid(),sig);
+
+2、 unsigned int alarm(unsigned int seconds);
+	功能：该函数属于闹钟定时函数，在闹钟到达的时候
+		  进程将会收到来自于系统发送的定时信号。
+	参数：secons  定时的时间，单位是秒
+	返回值：成功 返回定时长度
+			失败 0；
+
+思考题：
+1、一个进程中如果有多个闹钟信号，那个生效 ？
+	那个闹钟最后一个设置那个生效。
+
+2、如果进程已经处于暂停状态，能否收到闹钟信号 ？
+    进程暂停的时候，闹钟不能到达，但是不停
+	一旦进程恢复运行，则闹钟立刻到达。
+
+信号的接收端：
+
+信号接收到之后进程有如下三种处理方式：
+1、默认处理方式； 遇到信号大部分进程退出
+2、忽略处理方式； 遇到信号不反应
+3、自定义处理；   遇到信号走专门的处理函数
+
+以上处理方式必须在进程启动之初加载(设置)；
+
+#include <signal.h>
+
+typedef void (*sighandler_t)(int); 
+  ==> sighandler_t  ==>void fun(int);
+
+sighandler_t signal(int signum, sighandler_t handler);
+
+xxx signal(int yy , xxx fun);
+
+void(*signal(int sig ,void (*handler)(int)))(int);
+
+===>信号处理函数的原型：
+===>化简之后为：
+  signal(int sig, pfun );  ===>信号处理函数
+  且：其中fun可以有如下宏：
+  pfun == SIG_DFL 表示当前进程收到信号走默认流程
+  pfun == SIG_IGN 表示当前进程收到信号走忽略流程
+  pfun == void(*pfun2)(int);表示收到信号都pfun2的函数
+
+
+思考题：
+1、如何验证系统中kill  -l的前32个信号中那些信号能被忽略
+   那些不能被忽略，为什么 ？
+	 9 19 18 
+
+自定义处理：
+1、首先定义自定义信号处理函数：
+   void fun(int sig)
+   {
+	
+   }
+
+2、在进程启动之初加载自定义处理函数调用;
+
+	signal(sig,fun);
+
+
+思考题：
+1、闹钟函数能不能被自定义处理并输出语句而不退出进程。
+
+2、如何在自定义处理函数中结束整个进程。
+	raise(9);
+	exit();
+	
+作业：
+	如何使用信号完成两个独立进程间的数据通信。
+	./a.out  ===>"hello"  ===>./b.out
+	./a.out  ===> 123     ===> ./b.out
+
+
+使用信号进程进程间通信：
+1、进程1 给 进程2  发送数字
+2、发送字符串
+3、发送文件
+
+
+编程使用信号+文件方式完成进程间 数字 和 字符串信息的传送。
+
+作业：
+    要求用管道+ 信号完成进程间文件的传递，并要保证是异步通信。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

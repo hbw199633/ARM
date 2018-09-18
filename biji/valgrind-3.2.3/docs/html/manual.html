@@ -1,0 +1,231 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Valgrind User Manual</title>
+<link rel="stylesheet" href="vg_basic.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.1">
+<link rel="start" href="index.html" title="Valgrind Documentation">
+<link rel="up" href="index.html" title="Valgrind Documentation">
+<link rel="prev" href="quick-start.html" title="The Valgrind Quick Start Guide">
+<link rel="next" href="manual-intro.html" title="1. Introduction">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div><table class="nav" width="100%" cellspacing="3" cellpadding="3" border="0" summary="Navigation header"><tr>
+<td width="22px" align="center" valign="middle"><a accesskey="p" href="quick-start.html"><img src="images/prev.png" width="18" height="21" border="0" alt="Prev"></a></td>
+<td width="25px" align="center" valign="middle"><a accesskey="u" href="index.html"><img src="images/up.png" width="21" height="18" border="0" alt="Up"></a></td>
+<td width="31px" align="center" valign="middle"><a accesskey="h" href="index.html"><img src="images/home.png" width="27" height="20" border="0" alt="Up"></a></td>
+<th align="center" valign="middle">Valgrind Documentation</th>
+<td width="22px" align="center" valign="middle"><a accesskey="n" href="manual-intro.html"><img src="images/next.png" width="18" height="21" border="0" alt="Next"></a></td>
+</tr></table></div>
+<div class="book" lang="en">
+<div class="titlepage">
+<div>
+<div><h1 class="title">
+<a name="manual"></a>Valgrind User Manual</h1></div>
+<div><p class="releaseinfo">Release 3.2.3 29 January 2007</p></div>
+<div><p class="copyright">Copyright © 2000-2007 <a href="http://www.valgrind.org/info/developers.html" target="_top">Valgrind Developers</a></p></div>
+<div><div class="legalnotice">
+<a name="id2630970"></a><p>Email: <a href="mailto:valgrind@valgrind.org" target="_top">valgrind@valgrind.org</a></p>
+</div></div>
+</div>
+<hr>
+</div>
+<div class="toc">
+<p><b>Table of Contents</b></p>
+<dl>
+<dt><span class="chapter"><a href="manual-intro.html">1. Introduction</a></span></dt>
+<dd><dl>
+<dt><span class="sect1"><a href="manual-intro.html#manual-intro.overview">1.1. An Overview of Valgrind</a></span></dt>
+<dt><span class="sect1"><a href="manual-intro.html#manual-intro.navigation">1.2. How to navigate this manual</a></span></dt>
+</dl></dd>
+<dt><span class="chapter"><a href="manual-core.html">2. Using and understanding the Valgrind core</a></span></dt>
+<dd><dl>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.whatdoes">2.1. What Valgrind does with your program</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.started">2.2. Getting started</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.comment">2.3. The Commentary</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.report">2.4. Reporting of errors</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.suppress">2.5. Suppressing errors</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.flags">2.6. Command-line flags for the Valgrind core</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.toolopts">2.6.1. Tool-selection option</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.basicopts">2.6.2. Basic Options</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.erropts">2.6.3. Error-related options</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.mallocopts">2.6.4. <code class="computeroutput">malloc()</code>-related Options</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.rareopts">2.6.5. Uncommon Options</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.debugopts">2.6.6. Debugging Valgrind Options</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.defopts">2.6.7. Setting default Options</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.clientreq">2.7. The Client Request mechanism</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.pthreads">2.8. Support for Threads</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.signals">2.9. Handling of Signals</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.wrapping">2.10. Function wrapping</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.wrapping.example">2.10.1. A Simple Example</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.wrapping.specs">2.10.2. Wrapping Specifications</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.wrapping.semantics">2.10.3. Wrapping Semantics</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.wrapping.debugging">2.10.4. Debugging</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.wrapping.limitations-cf">2.10.5. Limitations - control flow</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.wrapping.limitations-sigs">2.10.6. Limitations - original function signatures</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.wrapping.examples">2.10.7. Examples</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.install">2.11. Building and Installing</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.problems">2.12. If You Have Problems</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.limits">2.13. Limitations</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.example">2.14. An Example Run</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.warnings">2.15. Warning Messages You Might See</a></span></dt>
+<dt><span class="sect1"><a href="manual-core.html#manual-core.mpiwrap">2.16. Debugging MPI Parallel Programs with Valgrind</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.mpiwrap.build">2.16.1. Building and installing the wrappers</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.mpiwrap.gettingstarted">2.16.2. Getting started</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.mpiwrap.controlling">2.16.3. Controlling the wrapper library</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.mpiwrap.limitations">2.16.4. Abilities and limitations</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.mpiwrap.writingwrappers">2.16.5. Writing new wrappers</a></span></dt>
+<dt><span class="sect2"><a href="manual-core.html#manual-core.mpiwrap.whattoexpect">2.16.6. What to expect when using the wrappers</a></span></dt>
+</dl></dd>
+</dl></dd>
+<dt><span class="chapter"><a href="mc-manual.html">3. Memcheck: a heavyweight memory checker</a></span></dt>
+<dd><dl>
+<dt><span class="sect1"><a href="mc-manual.html#mc-manual.bugs">3.1. Kinds of bugs that Memcheck can find</a></span></dt>
+<dt><span class="sect1"><a href="mc-manual.html#mc-manual.flags">3.2. Command-line flags specific to Memcheck</a></span></dt>
+<dt><span class="sect1"><a href="mc-manual.html#mc-manual.errormsgs">3.3. Explanation of error messages from Memcheck</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="mc-manual.html#mc-manual.badrw">3.3.1. Illegal read / Illegal write errors</a></span></dt>
+<dt><span class="sect2"><a href="mc-manual.html#mc-manual.uninitvals">3.3.2. Use of uninitialised values</a></span></dt>
+<dt><span class="sect2"><a href="mc-manual.html#mc-manual.badfrees">3.3.3. Illegal frees</a></span></dt>
+<dt><span class="sect2"><a href="mc-manual.html#mc-manual.rudefn">3.3.4. When a block is freed with an inappropriate deallocation
+function</a></span></dt>
+<dt><span class="sect2"><a href="mc-manual.html#mc-manual.badperm">3.3.5. Passing system call parameters with inadequate read/write
+permissions</a></span></dt>
+<dt><span class="sect2"><a href="mc-manual.html#mc-manual.overlap">3.3.6. Overlapping source and destination blocks</a></span></dt>
+<dt><span class="sect2"><a href="mc-manual.html#mc-manual.leaks">3.3.7. Memory leak detection</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="mc-manual.html#mc-manual.suppfiles">3.4. Writing suppression files</a></span></dt>
+<dt><span class="sect1"><a href="mc-manual.html#mc-manual.machine">3.5. Details of Memcheck's checking machinery</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="mc-manual.html#mc-manual.value">3.5.1. Valid-value (V) bits</a></span></dt>
+<dt><span class="sect2"><a href="mc-manual.html#mc-manual.vaddress">3.5.2. Valid-address (A) bits</a></span></dt>
+<dt><span class="sect2"><a href="mc-manual.html#mc-manual.together">3.5.3. Putting it all together</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="mc-manual.html#mc-manual.clientreqs">3.6. Client Requests</a></span></dt>
+</dl></dd>
+<dt><span class="chapter"><a href="cg-manual.html">4. Cachegrind: a cache profiler</a></span></dt>
+<dd><dl>
+<dt><span class="sect1"><a href="cg-manual.html#cg-manual.cache">4.1. Cache profiling</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="cg-manual.html#cg-manual.overview">4.1.1. Overview</a></span></dt>
+<dt><span class="sect2"><a href="cg-manual.html#cache-sim">4.1.2. Cache simulation specifics</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="cg-manual.html#cg-manual.profile">4.2. Profiling programs</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="cg-manual.html#cg-manual.outputfile">4.2.1. Output file</a></span></dt>
+<dt><span class="sect2"><a href="cg-manual.html#cg-manual.cgopts">4.2.2. Cachegrind options</a></span></dt>
+<dt><span class="sect2"><a href="cg-manual.html#cg-manual.annotate">4.2.3. Annotating C/C++ programs</a></span></dt>
+<dt><span class="sect2"><a href="cg-manual.html#cg-manual.assembler">4.2.4. Annotating assembler programs</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="cg-manual.html#cg-manual.annopts">4.3. <code class="computeroutput">cg_annotate</code> options</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="cg-manual.html#id2610465">4.3.1. Warnings</a></span></dt>
+<dt><span class="sect2"><a href="cg-manual.html#id2573299">4.3.2. Things to watch out for</a></span></dt>
+<dt><span class="sect2"><a href="cg-manual.html#id2609352">4.3.3. Accuracy</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="cg-manual.html#id2606314">4.4. Implementation details</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="cg-manual.html#id2606322">4.4.1. How Cachegrind works</a></span></dt>
+<dt><span class="sect2"><a href="cg-manual.html#id2605859">4.4.2. Cachegrind output file format</a></span></dt>
+</dl></dd>
+</dl></dd>
+<dt><span class="chapter"><a href="cl-manual.html">5. Callgrind: a heavyweight profiler</a></span></dt>
+<dd><dl>
+<dt><span class="sect1"><a href="cl-manual.html#cl-manual.use">5.1. Overview</a></span></dt>
+<dt><span class="sect1"><a href="cl-manual.html#cl-manual.purpose">5.2. Purpose</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.devel">5.2.1. Profiling as part of Application Development</a></span></dt>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.tools">5.2.2. Profiling Tools</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="cl-manual.html#cl-manual.usage">5.3. Usage</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.basics">5.3.1. Basics</a></span></dt>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.dumps">5.3.2. Multiple profiling dumps from one program run</a></span></dt>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.limits">5.3.3. Limiting the range of collected events</a></span></dt>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.cycles">5.3.4. Avoiding cycles</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="cl-manual.html#cl-manual.options">5.4. Command line option reference</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.options.misc">5.4.1. Miscellaneous options</a></span></dt>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.options.creation">5.4.2. Dump creation options</a></span></dt>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.options.activity">5.4.3. Activity options</a></span></dt>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.options.collection">5.4.4. Data collection options</a></span></dt>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.options.separation">5.4.5. Cost entity separation options</a></span></dt>
+<dt><span class="sect2"><a href="cl-manual.html#cl-manual.options.simulation">5.4.6. Cache simulation options</a></span></dt>
+</dl></dd>
+</dl></dd>
+<dt><span class="chapter"><a href="ms-manual.html">6. Massif: a heap profiler</a></span></dt>
+<dd><dl>
+<dt><span class="sect1"><a href="ms-manual.html#ms-manual.spaceprof">6.1. Heap profiling</a></span></dt>
+<dd><dl><dt><span class="sect2"><a href="ms-manual.html#ms-manual.heapprof">6.1.1. Why Use a Heap Profiler?</a></span></dt></dl></dd>
+<dt><span class="sect1"><a href="ms-manual.html#ms-manual.using">6.2. Using Massif</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="ms-manual.html#ms-manual.overview">6.2.1. Overview</a></span></dt>
+<dt><span class="sect2"><a href="ms-manual.html#ms-manual.basicresults">6.2.2. Basic Results of Profiling</a></span></dt>
+<dt><span class="sect2"><a href="ms-manual.html#ms-manual.graphs">6.2.3. Spacetime Graphs</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="ms-manual.html#ms-manual.heapdetails">6.3. Details of Heap Allocations</a></span></dt>
+<dd><dl><dt><span class="sect2"><a href="ms-manual.html#ms-manual.accuracy">6.3.1. Accuracy</a></span></dt></dl></dd>
+<dt><span class="sect1"><a href="ms-manual.html#ms-manual.options">6.4. Massif Options</a></span></dt>
+</dl></dd>
+<dt><span class="chapter"><a href="hg-manual.html">7. Helgrind: a data-race detector</a></span></dt>
+<dd><dl>
+<dt><span class="sect1"><a href="hg-manual.html#hg-manual.data-races">7.1. Data Races</a></span></dt>
+<dt><span class="sect1"><a href="hg-manual.html#hg-manual.what-does">7.2. What Helgrind Does</a></span></dt>
+<dt><span class="sect1"><a href="hg-manual.html#hg-manual.options">7.3. Helgrind Options</a></span></dt>
+</dl></dd>
+<dt><span class="chapter"><a href="nl-manual.html">8. Nulgrind: the "null" tool</a></span></dt>
+<dt><span class="chapter"><a href="lk-manual.html">9. Lackey: a simple profiler and memory tracer</a></span></dt>
+<dd><dl>
+<dt><span class="sect1"><a href="lk-manual.html#lk-manual.overview">9.1. Overview</a></span></dt>
+<dt><span class="sect1"><a href="lk-manual.html#lk-manual.options">9.2. Lackey Options</a></span></dt>
+</dl></dd>
+<dt><span class="chapter"><a href="writing-tools.html">10. Writing a New Valgrind Tool</a></span></dt>
+<dd><dl>
+<dt><span class="sect1"><a href="writing-tools.html#writing-tools.intro">10.1. Introduction</a></span></dt>
+<dd><dl><dt><span class="sect2"><a href="writing-tools.html#writing-tools.tools">10.1.1. Tools</a></span></dt></dl></dd>
+<dt><span class="sect1"><a href="writing-tools.html#writing-tools.writingatool">10.2. Writing a Tool</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.howtoolswork">10.2.1. How tools work</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.gettingcode">10.2.2. Getting the code</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.gettingstarted">10.2.3. Getting started</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.writingcode">10.2.4. Writing the code</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.init">10.2.5. Initialisation</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.instr">10.2.6. Instrumentation</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.fini">10.2.7. Finalisation</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.otherinfo">10.2.8. Other Important Information</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.advice">10.2.9. Words of Advice</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="writing-tools.html#writing-tools.advtopics">10.3. Advanced Topics</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.suppressions">10.3.1. Suppressions</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.docs">10.3.2. Documentation</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.regtests">10.3.3. Regression Tests</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.profiling">10.3.4. Profiling</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.mkhackery">10.3.5. Other Makefile Hackery</a></span></dt>
+<dt><span class="sect2"><a href="writing-tools.html#writing-tools.ifacever">10.3.6. Core/tool Interface Versions</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="writing-tools.html#writing-tools.finalwords">10.4. Final Words</a></span></dt>
+</dl></dd>
+</dl>
+</div>
+</div>
+<div>
+<br><table class="nav" width="100%" cellspacing="3" cellpadding="2" border="0" summary="Navigation footer">
+<tr>
+<td rowspan="2" width="40%" align="left">
+<a accesskey="p" href="quick-start.html">&lt;&lt; The Valgrind Quick Start Guide</a> </td>
+<td width="20%" align="center"><a accesskey="u" href="index.html">Up</a></td>
+<td rowspan="2" width="40%" align="right"> <a accesskey="n" href="manual-intro.html">1. Introduction &gt;&gt;</a>
+</td>
+</tr>
+<tr><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td></tr>
+</table>
+</div>
+</body>
+</html>

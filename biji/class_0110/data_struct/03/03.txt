@@ -1,0 +1,86 @@
+/* ************************************************************************
+	> File Name: 03.txt
+	> Function: 
+	> Author: hlq
+	> Mail: hlqlinux@gmail.com 
+	> Created Time: 2017年02月15日 星期三 09时46分25秒
+	> Version: v1.0
+ ************************************************************************/
+ 单项循环链表
+ 概念：在单项链表的基础上，将单项链表的最后
+ 一个末尾节点的地址域中放入第一个节点的地址，
+ 构成单项循环链表。
+
+ 1. 第一个节点的初始化：
+ 	p->next = p;
+
+
+增加函数：
+	尾部增加函数;
+
+int add_tail_cliklist(linknode * L, datatype value)
+{
+	核心代码：
+	linknode * tmp = L;
+	while (tmp->next != L)
+	{
+		tmp = tmp->next;
+	}
+	linknode * p = create_linknode(value);
+
+	tmp->next = p;
+	p->next = L;
+}
+
+头部增加函数
+int add_head_clinklist(linknode * L, datatype value)
+{
+}
+
+
+修改函数
+int modify_value_clinklist(linknode * L, datatype oldvalue, datatype newvalue)
+{
+}
+
+
+
+查找函数
+int find_value_clinklist(linknode * L, datatype value)
+{
+
+}
+
+指定位置的值返回：
+int getvalue_pos_cliklist(linknode * L, int pos, datatype * a)
+{
+}
+
+删除功能：
+int delete_pos_cliklist(linknode * L, int pos)
+{
+
+}
+
+按值进行删除
+int delete_value_clinklist(linknode * L, datatype value)
+{
+
+}
+
+
+指定位置进行插入：
+int insert_pos_value_clinklist(linknode * L, int pos, datatype value)
+{
+}
+
+
+在指定值的后面插入一个新节点：
+int insert_value_clinklist(linknode * L, datatype destvalue, datatype value)
+{
+}
+
+
+
+
+

@@ -1,0 +1,82 @@
+tcp通信过程中存在的问题：
+
+1、connect: Connection refused
+   服务器没有启动；
+   服务器端不允许链接；
+
+2、bind：Cannot assign requested address
+   服务器在bind的时候，sin_addr.s_addr 填写错误不是当前主机ip地址
+
+3、bind：address already in use  ===》地址重用问题
+
+   解决方案：修改套接字属性允许地址重用开关打开；
+   int on = 1;
+   setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
+   将以上两行代码添加到socket之后 bind 函数调用之前；
+
+4、Program received signal SIGPIPE, Broken pipe.
+   
+   一般是对方主机已经断开链接；而当前进程没有对于该信号进行
+   错误捕获而发生段错误。
+
+5、在服务器上获取客户端信息：
+
+	accept()的参数2 和 3 用于获取链接客户端的地址信息；
+
+
+	connfd = accept(sockfd,NULL,NULL);   ///不关心
+
+	struct sockaddr_in  cliaddr;    ///要获取客户端信息
+	connfd = accept(socfd,(struct sockaddr*)&cliaddr,&len);
+	ip = %s \n ,  inet_ntoa(cliaddr.sin_addr);
+	port = %d \n,  ntohs(cliaddr.sin_port);
+
+
+   
+6、在客户端的地址绑定；
+	
+	在客户端流程中的bind函数属于可选项，其作用就是在客户端
+	信息发送的时候，设置客户端端信息；
+
+	注意：端口可以在 1- 65535 之间设定
+		  ip必须是真实的当前主机ip不能是虚假的；
+
+
+
+练习：
+	设计一个服务器端程序，可以接入多个客户端信息，并只打印
+	客户端的地址和端口信息即可；
+
+扩展： 屏蔽同桌信息，显示其他人信息；
+
+===============================================================
+TCP 实践：
+
+1、设计一个通用的客户端程序，在程序启动的时候可以指定要链接的
+   目标服务器ip和端口，同时可以在该客户端程序中选择进行发送字符串
+   还是发送文件：比如：
+    ./a.out  xx.xx.xx.xx  yyy
+
+	请选择： 1 发消息   2 发文件  3 退出
+	
+	1、>>
+	   >>
+	   >> 如果输入"quit" 客户端退出到选择界面
+    2、请输入要发送的文件： 开始发送文件
+		要提示发送文件成功还是失败；
+
+
+
+2、 基于tcp协议设计一个点对点的ftp服务器和客户端程序，要求
+ 	如下：
+	服务器启动后不退出；
+	客户端启动后类似ftp系统程序提示用户可以进行
+	ls 命令执行
+	put 命令执行
+	get 命令执行
+	by  命令执行
+
+	扩展：加入用户登录验证功能；
+
+
+

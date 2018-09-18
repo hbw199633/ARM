@@ -1,0 +1,174 @@
+IO模型与TCP并发服务器：
+
+IO模型：
+1、阻塞模型
+2、非阻塞模型
+3、多路复用模型
+4、信号驱动模型
+
+
+1、阻塞模型：===》io的默认处理方式：
+	i           o
+  scanf()      printf()
+  getchar()    putchar()
+  gets()       puts()
+  fgetc()      fputc()
+  fgets()      fputs()
+  fread()      fwrite()
+  fscanf()     fpritf()
+  read()       wirte()
+  recv()       send()
+  recvfrom()   sendto()
+
+
+2、非阻塞模型： ===》io的默认属性调整后变为非阻塞；
+	
+	2.1 在程序运行之初就修改属性，允许非阻塞；
+		open() 函数修改其默认属性：
+
+	   eg：
+	   	默认阻塞： open("./fifo",O_RDONLY);  
+				   read 一定阻塞
+		
+		非阻塞：   open("./fifo",O_RDONLY|O_NONBLOCK);  
+				   read：一定不阻塞；
+
+		注意：该方法必须要在io操作之前的open函数位置修改。
+
+练习：
+	使用以上非阻塞模式的设置方法，修改scanf和printf函数的
+	io操作，使其变为非阻塞方式io读写终端；
+
+
+	2.2 在程序运行过程中修改属性，允许非阻塞；
+	#include <unistd.h>
+	#include <fcntl.h>
+
+	int fcntl(int fd, int cmd, ... /* arg */ );
+    功能：该函数可以修改指定文件的默认属性；
+	参数：fd 已经打开的文件描述符
+		  cmd   F_SETFL  设置属性
+		  		F_GETFL  获取属性
+		  ...  可变长参数，根据不同的cmd有不同参数：
+		  	   一般是具体的数据值。
+	返回值：成功 0
+			失败 -1；
+
+	使用fcntl来修改非阻塞属性；	
+	int  flag = fcntl(fd,F_GETFL,0);
+	flag = flag | O_NONBLOCK;
+	fcntl(fd,F_SETFL,flag);
+	..... 之后的所有io都变为非阻塞方式；
+
+练习：
+	修改之前的scanf和printf 使用fcntl方式修改io变为
+	非阻塞方式
+
+思考：网络通信过程中的tcp/udp 的io读写是否也可以用
+	  fctnl来修改为非阻塞？
+
+	   recv()/recvfrom() ==>flags == MSG_DONTWAIT;
+
+	  flag = flag & (~O_NONBLOCK);
+
+=================================================================
+3、多路复用模型 ===》tcp并发控制
+
+	3.1 简单循环服务器  ===》connfd
+
+	    socket()==>bind()==>listen()
+		
+		while(1)
+		{
+			connfd = accept()
+			recv();
+			close(connfd);
+		}
+
+		close(sockfd);
+
+	优点：
+		能并发接入
+		简单
+	缺点：
+		一次只能接入一个
+		数据传送量小
+        效率低下
+		恶意客户端只联不发
+	应用：
+		点名
+		拍卖
+		投票
+		抢红包
+
+
+	3.2 多进程循环服务器  ===》简单循环服务器
+
+		while(1)
+		{
+			connfd = accept();
+			if(connfd > 0) pid = fork();
+			if(pid == 0)
+			{
+				recv();
+				send();
+			}
+			close(connfd);  ///???
+		}
+
+		优点：
+			真正的并发接入
+			效率较高
+			可以在单个通道上进行交互操作；
+			
+		缺点：
+			资源回收复杂
+            服务器压力随客户端增大而增加
+			代码复杂
+			fork子进程一定会有边界
+			子进程与父进程的进程间通信
+
+		应用：
+			聊天室
+			10086 电话客服
+			小于fork子进程个数的所有并发网络接入
+
+
+	3.3 多线程循环服务器 ===》多进程循环服务器
+
+
+		void* fun(void *arg)
+		{
+				recv();
+				send();
+		}
+
+        
+		while(1)
+		{
+			connfd = accept();
+			if(connfd > 0)  pthread_create(tid,fun);
+			close(connfd);  ///???
+		}
+
+	缺点：
+		资源回收复杂
+		线程调用传参有问题（地址/值）
+		单进程的线程创建个数有边界（300左右）
+
+
+
+
+作业：
+	使用多线程循环服务器模型，设计一个并发TCP服务器
+	可以接入多个客户端链接，并将每个客户端的信息存储
+	到以该主机ip为名称的文件中，记录该客户端的所有
+	发送信息。
+
+
+
+
+
+
+
+

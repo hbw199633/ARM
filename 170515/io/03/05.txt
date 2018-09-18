@@ -1,0 +1,188 @@
+目录与属性
+
+目录操作：
+	目录切换(打开) ===》目录遍历 ===》关闭目录
+	opendir()         readdir()      closedir()
+	chdir();
+	
+	man  2  mkdir
+	man  2  rmdir
+
+
+1、打开目录：
+#include <sys/types.h>
+#include <dirent.h>
+
+DIR *opendir(const char *name);
+功能：该函数可以打开指定的目录路径
+参数：name要打开的目录文件路径+名称
+返回值：成功  返回目录流指针
+		失败 NULL
+
+2、关闭目录
+ int closedir(DIR *dirp);
+ 功能：关闭指定的目录流对象
+ 参数：dirp 要关闭的目录流对象
+ 返回值：成功 0
+		失败 -1；
+
+
+3、目录遍历	
+ struct dirent *readdir(DIR *dirp);
+ 功能：该函数执行一次可以从指定目录中获取一个目录中文件信息。
+ 参数：dirp 要获取目录文件的目标目录流对象
+ 返回值：成功 返回目录对象指针
+		 失败/结尾 NULL
+ 注意：目录对象指针如下格式
+		 struct dirent {
+			 ino_t          d_ino;       /* inode number */
+			 off_t          d_off;       /* offset to the next dirent */
+			 unsigned short d_reclen;    /* length of this record */
+			 unsigned char  d_type;      /* type of file; not supported
+											by all file system types */
+			 char           d_name[256]; /* filename */
+		 };
+
+练习：
+	使用以上函数将任意目录中的所有文件名称打印输出。
+
+4、切换工作目录 
+ int chdir(const char *path);
+ 功能：将当前工作目录切换到目标指定的位置。
+ 参数：path 目标工作目录
+ 返回值：成功 0
+		失败 -1
+		
+5、获取当前工作目录路径
+ char *getcwd(char *buf, size_t size);
+ buf中用于存储获取的当前目录的绝对路径。
+ 
+
+==================================================================
+文件的属性：
+ll ==>可以查看文件属性 ===》ls -l ===>ls 
+   ===>stat 命令 ===>man 2 stat
+   ===>使用stat函数设计一个自己的ll程序效果。
+
+文件类型有7种：
+
+	普通文件        -
+	目录文件		d
+	
+	字符设备文件    c  ===>/dev/zero
+	块设备文件      b  ===>/dev/sr0
+	套接字文件      s  ===>/dev/log
+	
+	链接文件        l  ===>/dev/systty
+	管道文件        p  ===> mkfifo xxx
+
+
+获取文件属性函数
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+int stat(const char *path, struct stat *buf);
+功能：该函数可以将指定文件的属性信息反馈到指定的结构体中。
+参数：path 要获取属性的目标文件路径+名称
+      buf  获取文件属性后用于存储属性信息的结构体变量地址，
+		   一般事先定义一个空变量在此传入。
+返回值：成功 0
+		失败 -1；
+
+注意：struct stat 结构体详情见 man 2 stat 
+
+stat() 与 lstat() 的区别：lstat 可以显示链接文件本身的链接类型
+						  stat显示的是链接文件目标文件的类型
+
+stat() 与 fstat() 的区别：fstat函数可以将一个已经以文件io方式打开
+						  的文件属性信息获取。
+						  stat 函数获取的是尚未打开的文件属性信息
+
+mode_t  st_mode == int ===> 只用到了该整形数的低16bit位
+	
+	4 bit  3bit  3bit  3bit  3bit
+	类型   UGT   rwx   rwx   rwx
+
+文件连接数： st_nlink  ==> %u 输出
+
+用户信息： st_uid ==>unsigned int ==>uid ===>/etc/passwd
+			===> pwd.h
+			===>getpwuid()
+
+struct passwd *getpwuid(uid_t uid);
+功能：该函数可以将用户id翻译成指定的结构体
+参数: uid 用户id
+返回值：成功 返回类似/etc/passwd组织结构的用户信息结构体
+		失败NULL
+用户名称信息 ===》struct passwd ==>pw_name;
+
+
+用户组信息： st_gid ==>unsigned int ==>gid ==>/etc/group
+			===>grp.h
+			===>getgrgid();
+
+ struct group *getgrgid(gid_t gid);
+ 功能：该函数可以将用户组id翻译成指定的用户组信息结构体
+ 参数：gid 用户组id
+ 返回值：成功 返回类似/etc/group组织结构的用户组信息结构体
+		 失败  NULL
+
+ 用户组信息 ===》struct group ===>gr_name
+
+ 文件大小信息： st_size  ==> %ld 输出
+	
+ 文件时间信息： time_t  ===>long int ==> time.h
+				===>localtime()
+
+ struct tm *localtime(const time_t *timep);
+ 功能：该函数可以将一个时间类型的整数转换为指定的结构体类型。
+ 参数：timep 时间整数值的地址
+ 返回值：成功 返回格式化后的时间结构体
+		 失败 NULL
+	
+  时间结构体，具体详见 struct tm;
+
+
+目标：
+	./a.out  ./   ===> ll ./
+	./a.out  /dev ===> ll  /dev
+	./a.out  xxx  ===> ll xxx
+	./a.out       ===> ll
+
+如果有问题考虑 chdir() 函数的作用。
+
+
+				
+
+=====================================================
+gdb 跟踪core文件：
+
+1、在代码目录中设置core配置：
+    ulimit  -a  ===>core file size  == 0
+    ulimit -c unlimited  ==>设置允许生成core文件
+2、在代码目录编译目标程序加入-g 调试
+    gcc  xxx.c   -g
+
+3、在代码目录中执行程序并产生段错误
+    ./a.out   ==>段错误 (核心已转储)
+
+4、在代码目录中会自动生成一个以core开头的文件
+
+5、使用gdb + core方式启动定位错误
+    gdb  a.out  core
+
+6、查看准确的段错误位置。
+
+
+
+
+
+
+
+
+
+
+
+
+

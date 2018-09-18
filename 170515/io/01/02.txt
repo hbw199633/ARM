@@ -1,0 +1,158 @@
+fgetc()/fputc() 
+优点：可以完成基本的文件读写。
+缺点：单次操作io的数据小，效率低下。
+
+文件流对象： 文本流   二进制流
+
+字符串读写函数：fgets()/fputs() ==>针对文本流对象。
+
+框架：
+	fopen() ===>fgets()/fputs() ===>fclose();
+
+读操作：fgets
+char *fgets(char *s, int size, FILE *stream);
+功能：该函数可以从指定的流对象中获取指定大小的数据到本地内存。
+参数：s 用于存储数据的本地内存。
+      size 要存储数据的本地内存大小，默认存储时候会自动 -1；
+	  stream 获取数据的目标文件流指针
+返回值：成功  获取到的数据地址
+		失败/结尾  NULL
+
+char *gets(char *s);  == fgets(s,size,stdin);
+
+1、fgets的返回值是目标存储区的地址  == s  ?
+2、size == sizeof(s) ==>实际大小是s内存大小还是 大小-1 怎么验证？
+3、如果stream 流是stdin，会不会有内存溢出？
+4、文件结尾判断  NULL, fgets也会读入文件中的换行符
+5、fgets如果获取数据小于s大小且有'\n',则一次读取
+	    如果获取数据大于s大小则按照sizeof(s)-1长度获取
+
+注意：gets和scanf都存在内存溢出的问题。
+
+写操作： fputs	
+int fputs(const char *s, FILE *stream);
+功能：该函数可以将s所在内存区中的数据，写入stream对应的文件流中。
+参数：s 要写的目标字符串。
+	  stream 要写的目标文件流对象
+返回值：成功  返回>0的值
+		失败 EOF
+
+puts(s); == fputs(s+'\n',stdout);
+
+
+1、s 能不能直接是字符串常量输出，或者字符串数组。
+2、stream流对象如果是stdout的是有没有'\n'
+3、如果用fputs输出和printf输出有什么差异？
+
+
+
+练习：
+1、如何使用fputs/fgets完成如下功能：
+	提示用户任意输入，并将用户输入的信息写文件
+	当用户输入"quit" 的时候程序退出,并输出刚才
+	用户输入过的信息记录。
+	要求：尽量不要使用printf和scanf
+
+
+2、使用主函数传方式配合fputs/fgets完成指定两个
+   文件的拷贝功能：
+	比如：	./a.out  src  dst
+
+
+作业：
+     使用以上任意一种标准io完成，当前笔记文件中第40-45行内容的删除功能。
+
+
+
+	fputs函数在写文件过程中只能以字符串形式写文件
+	不能写二进制文件，所以以上拷贝过程不适用与二进制文件拷贝。
+
+
+二进制文件读写： fread/fwrite
+
+
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+功能：该函数可以从指定的流对象中获取指定个数的单元数据到目标内存。
+参数：ptr ==》void * ==》纯地址类型，表示存储数据的内存。
+      size ==》int ===》代表要读取的数据单元大小。
+	  nmemb ==>int ===> 代表要读取的数据个数。
+	  stream 获取数据的源。如果是stdin表示从终端获取。
+返回值：成功 返回 <= nmemb 的单元个数。
+		失败/0  <= size   0 表示结尾。
+
+ size_t   fwrite(const  void  *ptr,  size_t  size,  
+                 size_t  nmemb,  FILE *stream);
+ 功能：该函数可以向指定的流对象文件中写入指定个数的二进制数据。
+ 参数：ptr要写入的目标数据
+	   size 要写入的目标数据单元大小
+	   nmemb 要写入的目标数据单元个数
+	   stream 要写入的目标文件流指针
+返回值：成功 <= nemeb的单元个数
+		失败 < size 
+
+二进制数据有两种：
+1、自己构造二进制读写数据  ===》结构体
+	读写程序都基于同一个结构体，读写都是基于该结构体。
+	文件中存储的形式是二进制。
+
+2、其他构造二进制读写数据  ===》其他二进制
+	如果已知对方数据组织形式，则安装其格式读写。
+	如果不知对方数据组织形式，按照指定单元读写。
+
+练习：
+1、使用fread获取键盘终端输入并使用fwrite写屏幕输出。
+	fread从终端获取数据不是以'\n'提交数据是按照fread的参数长度决定。
+
+2、使用fread读取普通文本文件内容并使用fwrite写屏幕输出。
+   fread和fwrite在读写普通文本文件的内容时候，如果有汉字可能出现乱码
+
+
+===>fread/fwrite 一般不用与终端操作。
+
+
+3、使用fread/fwrite 完成任意文件的拷贝功能。
+	比如： ./a.out  a.txt  b.txt
+		   ./a.out  xx.pdf  yy.pdf
+
+================================================================
+fgetc/fputc
+fgets/fputs  ===>ascii码流文件
+fread/fwrite ===>二进制流文件
+fscanf/fprintf===>格式化操作文件
+
+
+格式化io
+
+1、读操作  fscanf
+int fscanf(FILE *stream, const char *format, ...);
+功能：该函数可以从指定的流文件中获取指定格式的数据。
+参数：stream 获取数据的目标文件流对象，如果是stdin从键盘终端获取。
+	  format ... 与scanf类似的数据格式。
+返回值：成功 获取的数据个数
+		失败/文件结尾 EOF
+
+2、写操作： fprintf
+int fprintf(FILE *stream, const char *format, ...);
+功能：该函数可以以指定格式的数据输出到目标流文件中。
+参数：stream要输出数据的目标文件流对象，如果是stdout向屏幕终端输出
+	  format ... 与pritnf类似的输出格式串
+返回值：成功 返回输出的数据长度
+		失败 EOF
+练习：
+	使用fprintf+ fscanf函数完成一个简单格式文件的输入输出。
+	提醒用户输入名称和地址并将该信息存储到以下文件。
+	要求：文件内容如下
+	 id   name   addr
+	 1    zhang   asdfasf
+	 2    li      asdfasdf
+	程序每次启动都可以向该文件末尾增加新数据并保证第一列编号连续。
+	 3    zhao  ssss
+	 4    ma     4r444
+
+
+作业：
+	使用二进制文件读写函数完成通讯录程序的文件读写
+	将原来的通讯录程序记录的信息存储到指定文件。
+    原来的程序功能(增加，删除，修改，查询)不能省略。
+
+	

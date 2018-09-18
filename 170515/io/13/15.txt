@@ -1,0 +1,112 @@
+进程间通信之 信号量集：
+
+多线程临界资源： 互斥锁  ===》排他性访问，无序
+				 信号量  ===》排他性访问，有序
+
+多进程共享资源： 排他性访问，IPC 对象信号量集
+
+IPC信号量集操作框架：
+ key ==>申请信号量 ==》控制信号量(pv操作)==》卸载信号量
+
+
+1、key 唯一键值： 三种取值方式。
+
+2、申请信号量集： semget
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+
+int semget(key_t key, int nsems, int semflg);
+功能：该函数可以向内核提出信号量集使用申请。
+参数：key 唯一键值
+	  nsems 要申请的信号量集中信号量的个数；
+	  semflg 申请信号量集的方式和权限：
+				IPC_CREAT 第一次创建
+				IPC_EXCL  存在检测
+返回值：成功 semid
+		失败  -1；
+
+ipcs -s  ==>查看信号量集信息
+
+
+2、控制信号量（pv操作）
+	
+int semop(int semid, struct sembuf *sops, unsigned nsops);
+功能：该函数可以修改信号量的值，完成pv操作。
+参数：semid 信号量集id
+	  sops  信号量集中信号的操作结构体
+	  struct sembuf
+	{
+	unsigned short sem_num;  /*信号集中信号的编号，默认从0 开始编号 */
+	short          sem_op;   /*信号量的操作：= +1 表示释放资源，V 操作*/
+											 = -1 表示申请资源，P 操作
+											 = 0 表示暂无资源，会阻塞
+	short          sem_flg;  /*操作方式，0 表示阻塞执行信号量 */
+
+	}
+	 nsops 操作信号量的个数。
+返回值：成功 返回0
+		失败 返回-1；
+
+练习：
+	设计两个独立进程，配合共享内存+ 信号量集 完成如下功能：
+	   进车1  获取用户输入信息并写入共享内存
+	   进程2  读取共享内存数据并打印输出
+	   当输入"quit"的时候双方退出。步调必须一致。
+
+
+
+3、信号量集中信号量的属性修改。
+int semctl(int semid, int semnum, int cmd, ...);
+功能：该函数可以将指定信号量集中的信号量的属性修改。
+参数：semid 要修改的目标信号量集id
+	  semnum 信号量集中信号的编号
+	  cmd    SETVAL 修改并设置信号量的值
+			 GETVAL 获取信号量的值
+	  ...    如果cmd = SETVAL 则 ... 直接写信号量设置
+			     cmd = GETVAL 则 ... 不用参数，函数返回值就是该值
+返回值：成功 cmd
+		失败 -1；
+
+
+4、删除信号量对象：
+
+int semctl(int semid, int semnum, int cmd, ...);
+
+功能完全类似修改属性。
+参数：semid 信号量id
+	  semnum 要删除的信号量编号，申请几个信号量就需要
+	  删除几次。
+
+	  cmd   IPC_RMID 
+	  ....  无
+返回值：成功 0
+		失败 -1；
+	
+
+一般信号量集的PV操作会封装独立函数实现。
+
+int my_semwait(int semid,int nsem)     ///模拟线程的信号量p操作
+{
+	struct sembuf  buf;
+	buf.sem_num = nsem;
+	buf.sem_op  = -1;
+	buf.sem_flg = 0;
+	int ret = semop(semid,&buf,1);
+	return ret;
+}
+
+int my_sempost(int semid,int nsem)     ////模拟线程信号量v操作
+{
+	struct sembuf  buf;
+	buf.sem_num = nsem;
+	buf.sem_op  = 1;
+	buf.sem_flg = 0;
+	int ret = semop(semid,&buf,1);
+	return ret;
+}
+
+
+练习：
+	将昨天的作业用共享内存 + 信号量集实现一遍。
+
